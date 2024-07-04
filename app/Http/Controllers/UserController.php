@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Traits\FormatResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Resources\UserResource;
@@ -10,6 +11,7 @@ use App\Http\Resources\ClientResource;
 
 class UserController extends Controller
 {
+    use FormatResponse;
     /**
      * Display a listing of the resource.
      */
@@ -47,6 +49,7 @@ class UserController extends Controller
             'nom_client' => $minValidate,
             'code_client' => $minValidate,
             'prenom' => $minValidate,
+            "telephone"=>$minValidate,
             'role' => 'required|in:consultant,DG,COT,DPT,client',
             'email' => 'nullable|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed', // le champ confirmed vérifie que password et password_confirmation sont identiques
@@ -59,6 +62,7 @@ class UserController extends Controller
         $user->prenom = $request->input('prenom');
         $user->role = $request->input('role');
         $user->email = $request->input('email');
+        $user->telephone = $request->input('telephone');
         $user->password = $request->input('password');
         $user->save();
 

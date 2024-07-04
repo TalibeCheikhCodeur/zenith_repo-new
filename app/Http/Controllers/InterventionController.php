@@ -45,11 +45,9 @@ class InterventionController extends Controller
         $intervention->isAssigned = true;
 
         $intervention->save();
-        return response()
-            ->json([
-                'message' => 'L\'intervention a bien été affectée au consultant',
-                'data' => $intervention
-            ], Response::HTTP_OK);
+        
+        return $this->response(Response::HTTP_OK,"L\'intervention a bien été affectée au consultant",["intervation"=>$intervention]);
+
     }
 
     /*
@@ -74,10 +72,8 @@ class InterventionController extends Controller
         $intervention->caractere_intervention = $caractereInter;
 
         $intervention->save();
-        return Response()->json(
-            ['message' => 'Ajout reussi', 'data' => $intervention],
-            Response::HTTP_OK
-        );
+        return $this->response(Response::HTTP_OK,"Fiche enregistrer avec succès",["intervation"=>$intervention]);
+
     }
 
     /*
@@ -87,13 +83,13 @@ class InterventionController extends Controller
     public function allAskInterventions()
     {
         $askInterventions = Intervention::where('isAssigned', false)->get();
-        return $askInterventions;
+        return $this->response(Response::HTTP_OK,"tous les demandes d'intervations",["intervation"=>$askInterventions]);
     }
 
 
     public function allFiches()
     {
         $fiche = Intervention::whereNotNull(['user_id', 'debut_intervention'])->get();
-        return Response()->json(InterventionResource::collection($fiche));
+        return $this->response(Response::HTTP_OK,"tous les fiches",["intervation"=>$fiche]);
     }
 }

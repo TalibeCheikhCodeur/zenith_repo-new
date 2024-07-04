@@ -34,5 +34,6 @@ Route::get('/fiches', [InterventionController::class, 'allFiches']);
 Route::apiResource('/modules', ModuleController::class);
 Route::apiResource('/modules', ModuleController::class);
 Route::get('/clients', [UserController::class, 'allClients']);
-Route::apiResource('/users', UserController::class);
+Route::get('/users', [UserController::class, 'allUsers']);
+Route::post('/users', [UserController::class,"store"]);
 Route::apiResource('/rapport', RapportController::class);
