@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InterventionController;
 use App\Http\Controllers\ModuleController;
+use App\Http\Controllers\NoteController;
 use App\Http\Controllers\RapportController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -21,7 +22,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+    
 });
+
 
 
 Route::post("/login", [AuthController::class, "login"]);
@@ -36,3 +39,7 @@ Route::apiResource('/modules', ModuleController::class);
 Route::get('/clients', [UserController::class, 'allClients']);
 Route::apiResource('/users', UserController::class);
 Route::apiResource('/rapport', RapportController::class);
+Route::resource('/note',NoteController::class);
+
+
+

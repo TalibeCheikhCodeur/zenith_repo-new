@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreNoteRequest extends FormRequest
@@ -11,7 +12,7 @@ class StoreNoteRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +22,13 @@ class StoreNoteRequest extends FormRequest
      */
     public function rules(): array
     {
+        $ValuesTitles = ["pas satisfait", "satisfait", "très satisfait", "super satisfait"];
         return [
-            //
+
+                'title' => ['required', Rule::in($ValuesTitles)],
+                'points' => 'required|integer',
+                'commentaire' => 'required|string',
+                'intervention_id' => 'required|exists:interventions,id',
         ];
     }
 }
