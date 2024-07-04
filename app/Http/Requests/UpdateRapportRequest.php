@@ -11,7 +11,7 @@ class UpdateRapportRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +21,12 @@ class UpdateRapportRequest extends FormRequest
      */
     public function rules(): array
     {
+
         return [
-            //
+            'rapport' => 'required|string',
+            'intervention_id' => 'required|exists:interventions,id',
+            'user_id' => 'required|exists:users,id',
+            'date' => 'required|date',
         ];
     }
 }
