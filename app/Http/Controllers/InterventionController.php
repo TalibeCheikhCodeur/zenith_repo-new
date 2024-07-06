@@ -1,14 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\Intervention;
 use App\Http\Requests\StoreInterventionRequest;
 use App\Http\Requests\UpdateInterventionRequest;
 use App\Http\Resources\InterventionResource;
-use App\Models\Intervention;
+use App\Models\Module_intervention;
 use App\Traits\FormatResponse;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class InterventionController extends Controller
@@ -22,14 +23,46 @@ class InterventionController extends Controller
     public function askIntervention(Request $request)
     {
         $description = $request->input('description');
-        $moduleId = $request->input('module_id');
-        $intervention = new Intervention();
-        $intervention->description = $description;
-        $intervention->module_id = $moduleId;
+        $moduleIds = $request->input('module_ids');
+    
+        // Validation des entrées (optionnel mais recommandé)
+        $request->validate([
+            'description' => 'required|string',
+            'module_ids' => 'required|array',
+            'module_ids.*' => 'exists:modules,id', // Assurez-vous que le module existe dans la table modules
+        ]);
+    
+        // Initialisation d'une transaction
+        DB::beginTransaction();
+    
+        try {
+            // Création et sauvegarde de l'intervention
+            $intervention = new Intervention();
+            $intervention->description = $description;
+            $intervention->save();
+    
+            // Création et sauvegarde des liaisons module_interventions
+            foreach ($moduleIds as $moduleId) {
+                Module_intervention::create([
+                    'module_id' => $moduleId,
+                    'intervention_id' => $intervention->id,
+                ]);
+            }
+    
+            // Validation de la transaction
+            DB::commit();
+            return $this->response(Response::HTTP_OK,"La demande a été envoyée avec succès",["intervation"=>$intervention]);
 
-        $intervention->save();
-        
-        return $this->response(Response::HTTP_OK,"La demande a été envoyée avec succès",["intervation"=>$intervention]);
+        } catch (\Exception $e) {
+            // Annulation de la transaction en cas d'erreur
+            DB::rollBack();
+    
+            return response()->json([
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => 'Une erreur s\'est produite lors de l\'envoi de la demande',
+                'error' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /*
