@@ -41,6 +41,7 @@ Route::get('/users', [UserController::class, 'allUsers']);
 Route::post('/users', [UserController::class,"store"]);
 Route::apiResource('/rapport', RapportController::class);
 Route::resource('/note',NoteController::class);
+    Route::put('/cloture/{id}',[InterventionController::class,'clotured']);
 
 
 

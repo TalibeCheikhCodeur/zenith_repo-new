@@ -105,7 +105,7 @@ class InterventionController extends Controller
         $intervention->caractere_intervention = $caractereInter;
 
         $intervention->save();
-        return $this->response(Response::HTTP_OK,"Fiche enregistrer avec succès",["intervation"=>$intervention]);
+        return $this->response(Response::HTTP_OK,"Fiche enregistrer avec succès",["intervation"=>InterventionResource::collection($intervention)]);
 
     }
 
@@ -115,14 +115,36 @@ class InterventionController extends Controller
     */
     public function allAskInterventions()
     {
-        $askInterventions = Intervention::where('isAssigned', false)->get();
-        return $this->response(Response::HTTP_OK,"tous les demandes d'intervations",["intervation"=>$askInterventions]);
+        $askInterventions = Intervention::where('isAssigned', false)
+        ->with(['modules', 'user'])
+        ->get();
+        return $this->response(Response::HTTP_OK,"tous les demandes d'intervations",["intervation"=>InterventionResource::collection($askInterventions)]);
     }
 
 
     public function allFiches()
     {
-        $fiche = Intervention::whereNotNull(['user_id', 'debut_intervention'])->get();
-        return $this->response(Response::HTTP_OK,"tous les fiches",["intervation"=>$fiche]);
+        $fiches = Intervention::with(['modules', 'user'])
+            ->whereNotNull(['user_id', 'debut_intervention'])
+            ->get();
+
+        return $this->response(
+            Response::HTTP_OK,
+            "tous les fiches",
+            ["interventions" => InterventionResource::collection($fiches)]
+        );
+    }
+
+    public function clotured($interventionId)
+    {
+        $intervention = Intervention::findOrFail($interventionId);
+        $intervention->isClotured = true;
+        $intervention->save();
+
+        return $this->response(
+            Response::HTTP_OK,
+            "Cloturé avec succès",
+            ["intervention" => new InterventionResource($intervention)]
+        ); 
     }
 }

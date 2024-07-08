@@ -19,7 +19,7 @@ class ModuleController extends Controller
     {
         $modules = Module::all();
         // return  response()->json(ModuleResource::collection($modules));
-        return $this->response(response::HTTP_OK,"liste de tous les modules",["modules"=>$modules]);
+        return $this->response(response::HTTP_OK,"liste de tous les modules",["modules"=>ModuleResource::collection($modules)]);
     }
 
     /**
@@ -36,7 +36,8 @@ class ModuleController extends Controller
     public function store(StoreModuleRequest $request)
     {
         $module = Module::create($request->all());
-        return response()->json(['message' =>'module ajouté avec  succés', 'data'=>$module],Response::HTTP_OK);
+        // return response()->json(['message' =>'module ajouté avec  succés', 'data'=>$module],Response::HTTP_OK);
+        return $this->response(Response::HTTP_OK,"Module ajouté avec succès",[ModuleResource::collection($module)]);
     }
 
     /**
