@@ -12,11 +12,8 @@ class Module_interventionResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray(Request $request)
     {
-        return [
-            "module" => new ModuleResource($this->module),
-            "intervention" => new InterventionResource($this->intervention)
-        ];
+        return new ModuleResource($this->module);
     }
 }

@@ -20,27 +20,31 @@ class InterventionController extends Controller
         le client fait une demande d'intervation
         cette methode insère des données dans la table intervation sur les champs description et module_id
     */
+    public function index() {
+        $interventions = InterventionResource::collection(Intervention::all());
+        return $this->response(Response::HTTP_OK, "Voici la listes des interventions", ['interventions' => $interventions]);
+    }
     public function askIntervention(Request $request)
     {
         $description = $request->input('description');
         $moduleIds = $request->input('module_ids');
-    
+
         // Validation des entrées (optionnel mais recommandé)
         $request->validate([
             'description' => 'required|string',
             'module_ids' => 'required|array',
             'module_ids.*' => 'exists:modules,id', // Assurez-vous que le module existe dans la table modules
         ]);
-    
+
         // Initialisation d'une transaction
         DB::beginTransaction();
-    
+
         try {
             // Création et sauvegarde de l'intervention
             $intervention = new Intervention();
             $intervention->description = $description;
             $intervention->save();
-    
+
             // Création et sauvegarde des liaisons module_interventions
             foreach ($moduleIds as $moduleId) {
                 Module_intervention::create([
@@ -48,15 +52,15 @@ class InterventionController extends Controller
                     'intervention_id' => $intervention->id,
                 ]);
             }
-    
+
             // Validation de la transaction
             DB::commit();
-            return $this->response(Response::HTTP_OK,"La demande a été envoyée avec succès",["intervation"=>$intervention]);
+            return $this->response(Response::HTTP_OK,"La demande a été envoyée avec succès",["intervention"=>new InterventionResource($intervention)]);
 
         } catch (\Exception $e) {
             // Annulation de la transaction en cas d'erreur
             DB::rollBack();
-    
+
             return response()->json([
                 'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
                 'message' => 'Une erreur s\'est produite lors de l\'envoi de la demande',
@@ -78,8 +82,8 @@ class InterventionController extends Controller
         $intervention->isAssigned = true;
 
         $intervention->save();
-        
-        return $this->response(Response::HTTP_OK,"L\'intervention a bien été affectée au consultant",["intervation"=>$intervention]);
+
+        return $this->response(Response::HTTP_OK,"L\'intervention a bien été affectée au consultant",["intervention"=> new InterventionResource($intervention)]);
 
     }
 
@@ -105,7 +109,7 @@ class InterventionController extends Controller
         $intervention->caractere_intervention = $caractereInter;
 
         $intervention->save();
-        return $this->response(Response::HTTP_OK,"Fiche enregistrer avec succès",["intervation"=>InterventionResource::collection($intervention)]);
+        return $this->response(Response::HTTP_OK,"Fiche enregistrer avec succès",["intervention"=>new InterventionResource($intervention)]);
 
     }
 
@@ -145,6 +149,6 @@ class InterventionController extends Controller
             Response::HTTP_OK,
             "Cloturé avec succès",
             ["intervention" => new InterventionResource($intervention)]
-        ); 
+        );
     }
 }

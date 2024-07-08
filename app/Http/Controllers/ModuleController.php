@@ -37,7 +37,7 @@ class ModuleController extends Controller
     {
         $module = Module::create($request->all());
         // return response()->json(['message' =>'module ajouté avec  succés', 'data'=>$module],Response::HTTP_OK);
-        return $this->response(Response::HTTP_OK,"Module ajouté avec succès",[ModuleResource::collection($module)]);
+        return $this->response(Response::HTTP_OK,"Module ajouté avec succès",[ "module" => new ModuleResource($module)]);
     }
 
     /**

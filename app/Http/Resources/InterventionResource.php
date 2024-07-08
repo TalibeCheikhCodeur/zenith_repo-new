@@ -21,8 +21,11 @@ class InterventionResource extends JsonResource
             'debut_intervention' => $this->debut_intervention,
             'fin_intervention' => $this->fin_intervention,
             'caractere_intervention' => $this->caractere_intervention,
-            'user' => new UserResource($this->user),
-            'modules' => ModuleResource::collection($this->whenLoaded('modules'))
+            // 'user' => new UserResource($this->user),
+            'consultantId' => $this->user_id,
+            'modules' => Module_interventionResource::collection($this->moduleIntervention),
+            'assigner' => $this->isAssigned,
+            'cloturer' => $this->isClotured
         ];
     }
 }

@@ -17,15 +17,22 @@ class UserController extends Controller
      */
     public function allClients()
     {
-        $clients = User::where('role', 'client')->get();
-        return Response()->json(ClientResource::collection($clients));
+        // $clients = User::where('role', 'client')->get();
+        // return Response()->json(ClientResource::collection($clients));
+        // By me
+        $clients = ClientResource::collection( User::where('role', 'client')->get());
+        return $this->response(Response::HTTP_OK, 'Voici la liste des clients', ['clients' => $clients]);
     }
 
     public function allUsers()
     {
-        $users = User::whereNot('role', 'client')->get();
-        return Response()->json(UserResource::collection($users));
+        // $users = User::whereNot('role', 'client')->get();
+        // return Response()->json(UserResource::collection($users));
+        // By me
+        $users = UserResource::collection( User::whereNot('role', 'client')->get());
+        return $this->response(Response::HTTP_OK, 'Voici la liste des utilisateurs', ['users' => $users]);
     }
+
 
 
 

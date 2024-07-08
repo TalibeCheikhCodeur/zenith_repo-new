@@ -7,6 +7,7 @@ use App\Traits\FormatResponse;
 use Illuminate\Validation\Rule;
 use App\Http\Requests\StoreNoteRequest;
 use App\Http\Requests\UpdateNoteRequest;
+use App\Http\Resources\NoteResource;
 use Illuminate\Http\Response;
 
 
@@ -36,7 +37,7 @@ class NoteController extends Controller
     public function store(StoreNoteRequest $request)
     {
         // dd('success');
-      
+
         $note = Note::create([
 
             'title' => $request->title,
@@ -45,7 +46,7 @@ class NoteController extends Controller
             'intervention_id' => $request->intervention_id,
 
         ]);
-        return $this->response(Response::HTTP_OK, "La note a été ajoutée avec succès", ["note" => $note]);
+        return $this->response(Response::HTTP_OK, "La note a été ajoutée avec succès", ["note" =>new NoteResource($note)]);
     }
 
     /**

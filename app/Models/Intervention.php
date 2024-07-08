@@ -24,11 +24,11 @@ class Intervention extends Model
     {
         return $this->belongsToMany(Module::class, 'module_interventions');
     }
-   
-    // public function modules()
-    // {
-    //     return $this->belongsToMany(Module::class);
-    // }
+
+    public function moduleIntervention(): HasMany
+    {
+        return $this->hasMany(Module_intervention::class);
+    }
 
     public function notes(): HasMany
     {
