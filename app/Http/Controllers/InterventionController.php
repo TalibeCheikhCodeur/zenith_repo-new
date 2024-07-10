@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateInterventionRequest;
 use App\Http\Resources\InterventionResource;
 use App\Models\Module_intervention;
 use App\Traits\FormatResponse;
+use Carbon\Carbon;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Response;
 
@@ -23,6 +24,23 @@ class InterventionController extends Controller
     public function index() {
         $interventions = InterventionResource::collection(Intervention::all());
         return $this->response(Response::HTTP_OK, "Voici la listes des interventions", ['interventions' => $interventions]);
+    }
+
+    public static function calculateDuration($startTime, $endTime)
+    {
+        $start = Carbon::createFromFormat('H:i', $startTime);
+        $end = Carbon::createFromFormat('H:i', $endTime);
+
+        // Si l'heure de fin est avant l'heure de début, on assume que c'est le jour suivant
+        if ($end->lessThan($start)) {
+            $end->addDay();
+        }
+
+        $differenceInMinutes = $end->diffInMinutes($start);
+        $hours = floor($differenceInMinutes / 60);
+        $minutes = $differenceInMinutes % 60;
+
+        return sprintf('durée = %02dH%02dMin', $hours, $minutes);
     }
     public function askIntervention(Request $request)
     {
@@ -91,27 +109,39 @@ class InterventionController extends Controller
         le consultant renseigne  ses informations pour la realisation de l'ion
         cette methode récupère l'id d'une ion et insère dans les autres champs
     */
-    public function ficheIntervention(Request  $request, $interventionId)
-    {
-        $intervention = Intervention::findOrFail($interventionId);
+    public function ficheIntervention(Request $request, $interventionId)
+{
+    $intervention = Intervention::findOrFail($interventionId);
 
-        $dateDebut = $request->input("debut_intervention");
-        $dateFin = $request->input("fin_intervention");
-        $date = $request->input("date_intervention");
-        $typeIntervention = $request->input("types_intervention");
-        $caractereInter = $request->input("caractere_intervention");
+    $dateDebut = $request->input('debut_intervention');
+    $dateFin = $request->input('fin_intervention');
+    $date = $request->input('date_intervention');
+    $typeIntervention = $request->input('types_intervention');
+    $caractereInter = $request->input('caractere_intervention');
+    $trableShooting=$request->input('trableShooting');
 
+    $start = Carbon::createFromFormat('Y-m-d H:i:s', $dateDebut);
+    $end = Carbon::createFromFormat('Y-m-d H:i:s', $dateFin);
+    $differenceInMinutes = $end->diffInMinutes($start);
+    $hours = floor($differenceInMinutes / 60);
+    $minutes = $differenceInMinutes % 60;
+    $duree = sprintf('%02dh%02dMin', $hours, $minutes);
 
-        $intervention->debut_intervention = $dateDebut;
-        $intervention->fin_intervention = $dateFin;
-        $intervention->date_intervention = $date;
-        $intervention->types_intervention = $typeIntervention;
-        $intervention->caractere_intervention = $caractereInter;
+    $intervention->debut_intervention = $dateDebut;
+    $intervention->fin_intervention = $dateFin;
+    $intervention->date_intervention = $date;
+    $intervention->types_intervention = $typeIntervention;
+    $intervention->caractere_intervention = $caractereInter;
+    $intervention->durée = $duree;
+    $intervention->trableShooting=$trableShooting;
 
-        $intervention->save();
-        return $this->response(Response::HTTP_OK,"Fiche enregistrer avec succès",["intervention"=>new InterventionResource($intervention)]);
+    $intervention->save();
 
-    }
+    return $this->response(Response::HTTP_OK, 'Fiche enregistrée avec succès', [
+        'intervention' => new InterventionResource($intervention),
+        'duree' => $duree
+    ]);
+}
 
     /*
         la charger des opération et le DG doit voir tous les demandes d'ions

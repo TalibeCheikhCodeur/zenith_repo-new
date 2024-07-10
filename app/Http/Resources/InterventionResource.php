@@ -25,7 +25,9 @@ class InterventionResource extends JsonResource
             'consultantId' => $this->user_id,
             'modules' => Module_interventionResource::collection($this->moduleIntervention),
             'assigner' => $this->isAssigned,
-            'cloturer' => $this->isClotured
+            'cloturer' => $this->isClotured,
+            'duree' => $this->durée,
+            "trableShooting" => $this->trableShooting
         ];
     }
 }
