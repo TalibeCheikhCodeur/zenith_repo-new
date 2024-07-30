@@ -21,7 +21,7 @@ class ModuleResource extends JsonResource
             'gamme' => $this->gamme,
             'numero_serie' => $this->numero_serie,
             'code_annuel' => $this->code_annuel,
-            'client' => new ClientResource($this->user),
+            'client' => new Client2Resource($this->user),
         ];
     }
 }

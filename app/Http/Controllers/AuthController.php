@@ -17,14 +17,18 @@ class AuthController extends Controller
         }
 
         $user = Auth::user();
-        $token = $user->createToken("token")->plainTextToken; 
+        $token = $user->createToken("token")->plainTextToken;
         $cookie = cookie("token", $token, 24 * 60);
 
         return response([
+            "id" => $user->id,
             "nom" => $user->nom,
             "prenom" => $user->prenom,
             "email" => $user->email,
             "telephone" => $user->telephone,
+            "role" => $user->role,
+            "nom_client" => $user->nom_client,
+            "code_client" => $user->code_client,
             "token" => $token
         ])->withCookie($cookie);
     }

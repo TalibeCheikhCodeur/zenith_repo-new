@@ -22,7 +22,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
-    
 });
 
 
@@ -35,11 +34,11 @@ Route::put('/assignIntervention/{interventionId}/assign/{userId}', [Intervention
 Route::put('/fiche/{interventionId}', [InterventionController::class, 'ficheIntervention']);
 Route::get('/fiches', [InterventionController::class, 'allFiches']);
 Route::apiResource('/modules', ModuleController::class);
-Route::apiResource('/modules', ModuleController::class);
+// Route::apiResource('/modules', ModuleController::class);
 Route::get('/clients', [UserController::class, 'allClients']);
-Route::apiResource('/users', UserController::class);
+Route::get('/users', [UserController::class, 'allUsers']);
+Route::post('/users', [UserController::class, "store"]);
 Route::apiResource('/rapport', RapportController::class);
-Route::resource('/note',NoteController::class);
-
-
-
+Route::apiResource('/interventions', InterventionController::class);
+Route::apiResource('/notes', NoteController::class);
+Route::put('/cloture/{id}', [InterventionController::class, 'clotured']);

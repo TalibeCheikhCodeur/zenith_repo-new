@@ -17,4 +17,8 @@ class Module extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function module_interventions(): HasMany
+    {
+        return $this->hasMany(Module_intervention::class,'module_id');
+    }
 }
