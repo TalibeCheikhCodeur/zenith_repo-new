@@ -44,6 +44,7 @@ class RapportController extends Controller
     {
 
         if (!$rapport) {
+            dd('success');
             return $this->response(Response::HTTP_NOT_FOUND, "Le rapport n'existe pas",['rapport'=>[]]);
         }
 

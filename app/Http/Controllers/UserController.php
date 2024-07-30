@@ -47,6 +47,7 @@ class UserController extends Controller
             'nom_client' => $minValidate,
             'code_client' => $minValidate,
             'prenom' => $minValidate,
+            'telephone' => $minValidate,
             'role' => 'required|in:consultant,DG,COT,DPT,client',
             'email' => 'nullable|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed', // le champ confirmed vérifie que password et password_confirmation sont identiques
@@ -58,6 +59,7 @@ class UserController extends Controller
         $user->code_client = $request->input('code_client');
         $user->prenom = $request->input('prenom');
         $user->role = $request->input('role');
+        $user->telephone = $request->input('telephone');
         $user->email = $request->input('email');
         $user->password = $request->input('password');
         $user->save();
