@@ -21,7 +21,7 @@ class NoteController extends Controller
     public function index()
     {
         $notes = Note::all();
-        return $this->response(Response::HTTP_OK, "Liste des notes récupérée avec succès", ["notes" => $notes]);
+        return $this->response(Response::HTTP_OK, "Liste des notes récupérée avec succès", ["notes" => NoteResource::collection($notes)]);
     }
 
     /**
@@ -46,7 +46,7 @@ class NoteController extends Controller
             'intervention_id' => $request->intervention_id,
 
         ]);
-        return $this->response(Response::HTTP_OK, "La note a été ajoutée avec succès", ["note" =>new NoteResource($note)]);
+        return $this->response(Response::HTTP_OK, "La note a été ajoutée avec succès", ["note" => new NoteResource($note)]);
     }
 
     /**
