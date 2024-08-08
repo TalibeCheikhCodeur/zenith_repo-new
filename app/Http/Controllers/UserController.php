@@ -20,7 +20,7 @@ class UserController extends Controller
         // $clients = User::where('role', 'client')->get();
         // return Response()->json(ClientResource::collection($clients));
         // By me
-        $clients = ClientResource::collection( User::where('role', 'client')->get());
+        $clients = ClientResource::collection(User::where('role', 'client')->get());
         return $this->response(Response::HTTP_OK, 'Voici la liste des clients', ['clients' => $clients]);
     }
 
@@ -29,7 +29,7 @@ class UserController extends Controller
         // $users = User::whereNot('role', 'client')->get();
         // return Response()->json(UserResource::collection($users));
         // By me
-        $users = UserResource::collection( User::whereNot('role', 'client')->get());
+        $users = UserResource::collection(User::whereNot('role', 'client')->get());
         return $this->response(Response::HTTP_OK, 'Voici la liste des utilisateurs', ['users' => $users]);
     }
 
@@ -49,14 +49,14 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $minValidate='nullable|string|max:100';
+        $minValidate = 'nullable|string|max:100';
 
         $request->validate([
             'nom' => $minValidate,
             'nom_client' => $minValidate,
             'code_client' => $minValidate,
             'prenom' => $minValidate,
-            "telephone"=>$minValidate,
+            "telephone" => $minValidate,
             'role' => 'required|in:consultant,DG,COT,DPT,client',
             'email' => 'nullable|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed', // le champ confirmed vérifie que password et password_confirmation sont identiques
@@ -73,7 +73,12 @@ class UserController extends Controller
         $user->password = $request->input('password');
         $user->save();
 
-        return response()->json(['message' => 'Utilisateur créé avec succès'], 200);
+        if ($request->code_client != null) {
+            return $this->response(Response::HTTP_OK, "Utilisateur créé avec succes", ["utilisateur" => new ClientResource($user)]);
+        }
+
+        // return response()->json(['message' => 'Utilisateur créé avec succès'], 200);
+        return $this->response(Response::HTTP_OK, "Utilisateur créé avec succes", ["utilisateur" => new UserResource($user)]);
     }
 
 

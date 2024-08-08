@@ -29,7 +29,8 @@ class InterventionFicheResource extends JsonResource
             'duree' => $this->durée,
             "trableShooting" => $this->trableShooting,
             "observation" => new InterventionNoteResource($this->notes->first()),
-            "duree" => $this->durée
+            "duree" => $this->durée,
+            "date_demande" => $this->created_at
         ];
     }
 }

@@ -29,7 +29,8 @@ class InterventionResource extends JsonResource
             'cloturer' => $this->isClotured,
             'duree' => $this->durée,
             "trableShooting" => $this->trableShooting,
-            "notes" => new InterventionNoteResource($this->notes->first())
+            "notes" => new InterventionNoteResource($this->notes->first()),
+            "date_demande" => $this->created_at
         ];
     }
 }
