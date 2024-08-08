@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use App\Models\User;
+use App\Mail\NotifMail;
+use App\Jobs\SendEmailJob;
 use App\Models\Intervention;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Traits\FormatResponse;
+use Illuminate\Support\Facades\DB;
+use App\Models\Module_intervention;
+use Illuminate\Support\Facades\Mail;
+use App\Http\Resources\InterventionResource;
 use App\Http\Requests\StoreInterventionRequest;
 use App\Http\Requests\UpdateInterventionRequest;
-use App\Http\Resources\InterventionFicheResource;
-use App\Http\Resources\InterventionResource;
-use App\Models\Module_intervention;
-use App\Traits\FormatResponse;
-use Carbon\Carbon;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Date;
 
 class InterventionController extends Controller
 
@@ -47,8 +49,10 @@ class InterventionController extends Controller
 
         return sprintf('durée = %02dH%02dMin', $hours, $minutes);
     }
+
     public function askIntervention(Request $request)
     {
+
         $description = $request->input('description');
         $moduleIds = $request->input('module_ids');
 
@@ -78,7 +82,17 @@ class InterventionController extends Controller
 
             // Validation de la transaction
             DB::commit();
+            $mails = User::whereIn('role', ['COT', 'DPT'])->pluck('email');
+            $users = User::whereIn('role', ['COT', 'DPT'])->select('prenom')->get();
+
+            $recipients = [
+                'title' => 'Zenith_international',
+                'body' => 'un client a fait une nouvelles demande',
+                'user' => $users
+            ];
+            dispatch(new SendEmailJob($recipients, $mails));
             return $this->response(Response::HTTP_OK, "La demande a été envoyée avec succès", ["intervention" => new InterventionResource($intervention)]);
+
         } catch (\Exception $e) {
             // Annulation de la transaction en cas d'erreur
             DB::rollBack();
@@ -89,6 +103,8 @@ class InterventionController extends Controller
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
+
     }
 
     /*
@@ -99,13 +115,27 @@ class InterventionController extends Controller
     public function asignIntervention($interventionId, $userId)
     {
         $intervention = Intervention::findOrFail($interventionId);
-
+        $user = User::where('id', $userId)->first();
+        if (!$user) {
+            return $this->response(Response::HTTP_OK, "L\'utilisateur n'existe pas", []);
+        }
+        $this->sendMail([$user->email], $intervention->description, $intervention->caractere_intervention);
         $intervention->user_id = $userId;
         $intervention->isAssigned = true;
 
         $intervention->save();
-
         return $this->response(Response::HTTP_OK, "L\'intervention a bien été affectée au consultant", ["intervention" => new InterventionResource($intervention)]);
+    }
+
+    public function sendMail($mail, $description = null, $caractere_intervention = null)
+    {
+        $recipients = [
+            'title' => 'Zenith_international',
+            'body' => 'Une intervention vous a été assignée',
+
+        ];
+        dispatch(new SendEmailJob($recipients, $mail));
+
     }
 
     /*
@@ -123,18 +153,8 @@ class InterventionController extends Controller
         $caractereInter = $request->input('caractere_intervention');
         $trableShooting = $request->input('trableShooting');
 
-        $now = Carbon::now()->toDateString();
-
         $start = Carbon::createFromFormat('Y-m-d H:i:s', $dateDebut);
         $end = Carbon::createFromFormat('Y-m-d H:i:s', $dateFin);
-        if ($end->lessThan($start) || $end->equalTo($start)) {
-            return $this->response(Response::HTTP_INTERNAL_SERVER_ERROR, "L'heure de fin doit etre supérieur à l'heure de début", []);
-        }
-
-        if ($date != $now) {
-            return $this->response(Response::HTTP_INTERNAL_SERVER_ERROR, "La date doit etre la date du jour", []);
-        }
-
         $differenceInMinutes = $end->diffInMinutes($start);
         $hours = floor($differenceInMinutes / 60);
         $minutes = $differenceInMinutes % 60;
