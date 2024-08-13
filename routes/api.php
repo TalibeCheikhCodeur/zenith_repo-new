@@ -36,7 +36,7 @@ Route::put('/fiche/{interventionId}', [InterventionController::class, 'ficheInte
 Route::get('/fiches', [InterventionController::class, 'allFiches']);
 Route::get("/myFiche/{id}", [InterventionController::class, 'showFiche']);
 Route::apiResource('/modules', ModuleController::class);
-// Route::apiResource('/modules', ModuleController::class);
+Route::apiResource('/user', UserController::class);
 Route::get('/clients', [UserController::class, 'allClients']);
 Route::get('/users', [UserController::class, 'allUsers']);
 Route::post('/users', [UserController::class, "store"]);
@@ -44,5 +44,6 @@ Route::apiResource('/rapport', RapportController::class);
 Route::apiResource('/interventions', InterventionController::class);
 Route::apiResource('/notes', NoteController::class);
 Route::put('/cloture/{id}', [InterventionController::class, 'clotured']);
-Route::post('/forgot',[forgotPasswordController::class,'forgot']);
-Route::post('/reset',[forgotPasswordController::class,'reset']);
+Route::post('/forgot', [forgotPasswordController::class, 'forgot']);
+Route::post('/reset', [forgotPasswordController::class, 'reset']);
+Route::post('/insert', [UserController::class, 'insertData']);

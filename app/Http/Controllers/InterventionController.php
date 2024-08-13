@@ -16,10 +16,10 @@ use Illuminate\Support\Facades\Mail;
 use App\Http\Resources\InterventionResource;
 use App\Http\Requests\StoreInterventionRequest;
 use App\Http\Requests\UpdateInterventionRequest;
+use App\Http\Resources\InterventionFicheResource;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 class InterventionController extends Controller
-
 {
     use FormatResponse;
     /*
@@ -32,7 +32,7 @@ class InterventionController extends Controller
         return $this->response(Response::HTTP_OK, "Voici la listes des interventions", ['interventions' => $interventions]);
     }
 
-    public  function calculateDuration($startTime, $endTime)
+    public function calculateDuration($startTime, $endTime)
     {
         $start = Carbon::createFromFormat('H:i', $startTime);
         $end = Carbon::createFromFormat('H:i', $endTime);
@@ -87,7 +87,7 @@ class InterventionController extends Controller
 
             $recipients = [
                 'title' => 'Zenith_international',
-                'body' => 'un client a fait une nouvelles demande',
+                'body' => 'Un client a fait une nouvelle demande',
                 'user' => $users
             ];
             dispatch(new SendEmailJob($recipients, $mails));
