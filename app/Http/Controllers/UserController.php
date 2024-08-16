@@ -8,6 +8,7 @@ use App\Http\Requests\UserRequest;
 use App\Jobs\SendEmailJob;
 use App\Models\User;
 use App\Traits\FormatResponse;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Resources\UserResource;
@@ -62,22 +63,32 @@ class UserController extends Controller
             "telephone" => $allRequest['telephone'],
         ];
 
+        DB::transaction();
 
-        $user = User::create($newUser);
+        try {
 
-        $details = [
-            "title" => "Informations de connexion",
-            "body" => UserController::MESSAGE_PASSWORD . 12345678 . ". Vous pouvez le changer en vous connectant via ce lien: http://localhost:4200/"
-        ];
+            $user = User::create($newUser);
 
-        SendEmailJob::dispatch($details, [$newUser['email']]);
+            $details = [
+                "title" => "Informations de connexion",
+                "body" => UserController::MESSAGE_PASSWORD . 12345678 . ". Vous pouvez le changer en vous connectant via ce lien: http://localhost:4200/"
+            ];
 
-        if ($request->code_client != null) {
-            return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => new ClientResource($user)]);
+            DB::commit();
+            SendEmailJob::dispatch($details, [$newUser['email']]);
+
+            if ($request->code_client != null) {
+                return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => new ClientResource($user)]);
+            }
+            return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => new UserResource($user)]);
+        } catch (\Throwable $th) {
+            
+            DB::rollBack();
+
+            return $this->response(Response::HTTP_INTERNAL_SERVER_ERROR, $th->getMessage(), []);
         }
-
-        return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => new UserResource($user)]);
     }
+
 
     public function insertData(ExportRequest $request)
     {

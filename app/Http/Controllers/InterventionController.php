@@ -39,7 +39,6 @@ class InterventionController extends Controller
 
         // Si l'heure de fin est avant l'heure de début, on assume que c'est le jour suivant
         if ($end->lessThan($start)) {
-            // $end->addDay();
             return $this->response(Response::HTTP_INTERNAL_SERVER_ERROR, "L'heure de fin doit etre supérieur à le de début", "");
         }
 
@@ -103,8 +102,6 @@ class InterventionController extends Controller
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-
     }
 
     /*
