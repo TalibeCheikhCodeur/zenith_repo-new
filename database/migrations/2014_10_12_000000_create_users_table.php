@@ -13,7 +13,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table)
+        {
             $table->id();
             $table->string('nom')->nullable();
             $table->string('nom_client')->nullable();
@@ -27,14 +28,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        User::create([
-            'nom' => "LY",
-            'prenom' => "Cheikh",
-            'email' => "kha@gmail.com",
-            'password' => Hash::make('12345678'),
-            'role' => "DG",
-            'created_at' => now()
-        ]);
+      
     }
 
     /**

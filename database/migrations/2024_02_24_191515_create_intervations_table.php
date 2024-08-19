@@ -17,12 +17,12 @@ return new class extends Migration
             $table->id();
             $table->enum('types_intervention',["sur site","par correspondance"])->nullable();
             $table->string('description');
-            $table->date( 'date_intervention')->nullable();
+            $table->string('image')->nullable();
+            $table->date('date_intervention')->nullable();
             $table->dateTime('debut_intervention')->nullable();
             $table->dateTime('fin_intervention')->nullable();
-            $table->foreignIdFor(Module::class)->constrained();
-            $table->foreignIdFor(User::class)->constrained()->nullable();
-            $table->timestamps();
+            $table->foreignId('user_id')->constrained('users')->nullable()->onDelete('cascade')->onUpdate('cascade');    
+            $table->timestamps();        
         });
     }
 

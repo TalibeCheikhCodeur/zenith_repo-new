@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('module_interventions', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Intervention::class)->constrained();
-            $table->foreignIdFor(Module::class)->constrained();
+            $table->foreignIdFor(Intervention::class)->constrained()->nullable()->onDelete('cascade')->onUpdate('cascade');   
+            $table->foreignIdFor(Module::class)->constrained()->nullable()->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

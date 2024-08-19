@@ -18,6 +18,8 @@ use App\Http\Requests\StoreInterventionRequest;
 use App\Http\Requests\UpdateInterventionRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
+use Illuminate\Support\Facades\Auth;
+
 class InterventionController extends Controller
 
 {
@@ -49,34 +51,63 @@ class InterventionController extends Controller
         return sprintf('durée = %02dH%02dMin', $hours, $minutes);
     }
 
+
     public function askIntervention(Request $request)
     {
-       
-        $description = $request->input('description');
-        $moduleIds = $request->input('module_ids');
-
         // Validation des entrées (optionnel mais recommandé)
         $request->validate([
-            'description' => 'required|string',  
-            'module_ids' => 'required|array',
+            'module_ids'   => 'required|array',
             'module_ids.*' => 'exists:modules,id', // Assurez-vous que le module existe dans la table modules
         ]);
 
-        // Initialisation d'une transaction
-        DB::beginTransaction();
+        $description = $request->input('description');
 
+        $moduleIds = $request->input('module_ids');
+
+        DB::beginTransaction();
         try {
-            // Création et sauvegarde de l'intervention
-            $intervention = new Intervention();
+
+            $intervention = Intervention::find($request->idInt);
+
+            if ($intervention == null) 
+            {
+                $intervention = new Intervention();
+            }
+
             $intervention->description = $description;
+
+            if ($request->file('image') !== null)
+            {
+                $file = $request->file('image');
+                $ext = $file->getClientOriginalExtension();
+                $imageName = time().'.'.$ext;
+                $file->move(public_path()."/uploads/images/",$imageName);
+                $intervention->image = $imageName;
+                $intervention->path_image = asset('uploads/images/' . $imageName);
+            } else
+            {
+                if (!$intervention->exists)
+                {
+                    $intervention->image = null;
+                    $intervention->path_image = null;
+                }
+            }
+            
+            $intervention->user_id = 1;
+
             $intervention->save();
 
-            // Création et sauvegarde des liaisons module_interventions
-            foreach ($moduleIds as $moduleId) {
-                Module_intervention::create([
-                    'module_id' => $moduleId,
-                    'intervention_id' => $intervention->id,
-                ]);
+            if (!empty($moduleIds))
+            {
+                Module_intervention::where('intervention_id', $intervention->id)->delete();
+                
+                foreach ($moduleIds as $moduleId)
+                {
+                    Module_intervention::create([
+                        'module_id' => $moduleId,
+                        'intervention_id' => $intervention->id,
+                    ]);
+                }
             }
 
             // Validation de la transaction
@@ -212,5 +243,15 @@ class InterventionController extends Controller
             "Cloturé avec succès",
             ["intervention" => new InterventionResource($intervention)]
         );
+    }
+
+
+
+
+    public function destroy(Intervention $intervention)
+    {
+       $intervention->delete();
+       $interventions = Intervention::all();
+       return $this->response(Response::HTTP_OK, "Intervention supprimé avec succès",["interventions"=>InterventionResource::collection($interventions)]);
     }
 }

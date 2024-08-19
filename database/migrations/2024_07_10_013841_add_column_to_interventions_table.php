@@ -23,7 +23,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('interventions', function (Blueprint $table) {
-            //
+            $table->dropColumn('trableShooting');
+            $table->dropColumn('durée');
+            $table->dropColumn('path_image');
         });
     }
 };

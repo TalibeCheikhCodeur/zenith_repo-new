@@ -35,6 +35,7 @@ class ModuleController extends Controller
      */
     public function store(StoreModuleRequest $request)
     {
+        // dd($request->all());
         $module = Module::create($request->all());
         // return response()->json(['message' =>'module ajouté avec  succés', 'data'=>$module],Response::HTTP_OK);
         return $this->response(Response::HTTP_OK,"Module ajouté avec succès",[ "module" => new ModuleResource($module)]);
@@ -59,16 +60,24 @@ class ModuleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateModuleRequest $request, Module $module)
+   
+
+     public function update(UpdateModuleRequest $request, Module $module)
     {
-        //
+        $module->update($request->all());
+        return $this->response(Response::HTTP_OK, "Module mis à jour avec succès", ["module" => new ModuleResource($module)]);
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Module $module)
     {
-        //
+       $module->delete();
+       // recuperer toute les modules
+       $modules = Module::all();
+       // Retourne une réponse JSON confirmant la suppression
+       return $this->response(Response::HTTP_OK, "Module supprimé avec succès",["modules"=>ModuleResource::collection($modules)]);
     }
 }
