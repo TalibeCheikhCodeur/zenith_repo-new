@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('numero_serie')->unique();
             $table->string('code_annuel');
             $table->timestamps();
-        });
+        }); 
     }
 
     /**
