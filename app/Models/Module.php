@@ -21,4 +21,10 @@ class Module extends Model
     {
         return $this->hasMany(Module_intervention::class,'module_id');
     }
+      
+    public function gamme(): BelongsTo
+    {
+        return $this->belongsTo(Gamme::class,'gamme_id');
+     }
+    
 }
