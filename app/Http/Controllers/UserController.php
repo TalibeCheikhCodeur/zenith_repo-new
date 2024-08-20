@@ -68,6 +68,7 @@ class UserController extends Controller
         $user->code_client = $request->input('code_client');
         $user->prenom = $request->input('prenom');
         $user->role = $request->input('role');
+        $user->telephone = $request->input('telephone');
         $user->email = $request->input('email');
         $user->telephone = $request->input('telephone');
         $user->password = $request->input('password');

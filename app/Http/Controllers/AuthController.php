@@ -17,7 +17,6 @@ class AuthController extends Controller
         }
 
         $user = Auth::user();
-        // dd($user);
         $token = $user->createToken("token")->plainTextToken;
         $cookie = cookie("token", $token, 24 * 60);
 
