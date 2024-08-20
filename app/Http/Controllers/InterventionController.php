@@ -164,10 +164,8 @@ class InterventionController extends Controller
         $recipients = [
             'title' => 'Zenith_international',
             'body' => 'Une intervention vous a été assignée',
-            
         ];
         dispatch(new SendEmailJob($recipients, $mail));
-        
     }
 
     /*

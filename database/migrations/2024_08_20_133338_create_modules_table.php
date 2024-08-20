@@ -15,11 +15,8 @@ return new class extends Migration
         Schema::create('modules', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class)->constrained();
-            $table->string('types_produit');
-            $table->string('nom_produit');
-            $table->string('gamme');
-            $table->string('numero_serie')->unique();
-            $table->string('code_annuel');
+            $table->string('nom_produit')->nullable();
+            $table->foreignId('gamme_id')->constrained('gammes')->nullable()->onDelete('cascade')->onUpdate('cascade'); 
             $table->timestamps();
         });
     }
