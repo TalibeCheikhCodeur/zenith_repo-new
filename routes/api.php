@@ -7,6 +7,8 @@ use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\RapportController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\GammeController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +40,7 @@ Route::get("/myFiche/{id}", [InterventionController::class, 'showFiche']);
 Route::apiResource('/modules', ModuleController::class);
 Route::apiResource('/user', UserController::class);
 Route::get('/clients', [UserController::class, 'allClients']);
+//route
 Route::get('/users', [UserController::class, 'allUsers']);
 Route::post('/users', [UserController::class, "store"]);
 Route::apiResource('/rapport', RapportController::class);
@@ -47,3 +50,5 @@ Route::put('/cloture/{id}', [InterventionController::class, 'clotured']);
 Route::post('/forgot', [forgotPasswordController::class, 'forgot']);
 Route::post('/reset', [forgotPasswordController::class, 'reset']);
 Route::post('/insert', [UserController::class, 'insertData']);
+Route::apiResource('/gamme', GammeController::class);
+
