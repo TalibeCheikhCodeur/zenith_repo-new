@@ -138,7 +138,6 @@ class InterventionController extends Controller
         $intervention->isAssigned = true;
 
 
-        // test
 
         $intervention->save();
 
