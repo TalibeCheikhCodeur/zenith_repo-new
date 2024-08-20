@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::table('interventions', function (Blueprint $table) {
             $table->longText('trableShooting')->nullable();
             $table->string('durée')->nullable();
+            $table->string('path_image')->nullable();
         });
     }
 
