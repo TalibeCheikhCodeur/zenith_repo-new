@@ -9,4 +9,10 @@ class Gamme extends Model
 {
     use HasFactory;
     protected $guarded = [];
+
+
+    public function modules():HasMany
+    {
+        return $this->hasMany(Module::class);
+    }
 }
