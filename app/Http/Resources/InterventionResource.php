@@ -23,6 +23,8 @@ class InterventionResource extends JsonResource
             'fin_intervention' => $this->fin_intervention,
             'caractere_intervention' => $this->caractere_intervention,
             // 'user' => new UserResource($this->user),
+            'image'  => $this->image,
+            'path_image' => $this->path_image,
             'consultantId' => $this->user_id,
             'modules' => Module_interventionResource::collection($this->moduleIntervention),
             'assigner' => $this->isAssigned,

@@ -35,9 +35,6 @@ class UserController extends Controller
         return $this->response(Response::HTTP_OK, 'Voici la liste des utilisateurs', ['users' => $users]);
     }
 
-
-
-
     /**
      * Show the form for creating a new resource.
      */
@@ -82,13 +79,12 @@ class UserController extends Controller
             }
             return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => new UserResource($user)]);
         } catch (\Throwable $th) {
-            
+
             DB::rollBack();
 
             return $this->response(Response::HTTP_INTERNAL_SERVER_ERROR, $th->getMessage(), []);
         }
     }
-
 
     public function insertData(ExportRequest $request)
     {
