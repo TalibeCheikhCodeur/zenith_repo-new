@@ -10,13 +10,13 @@ use Illuminate\Notifications\Notification;
 class InterventionNotification extends Notification
 {
     use Queueable;
- protected $details;
+    protected $details;
     /**
      * Create a new notification instance.
      */
     public function __construct($details)
     {
-        $this->details=$details;
+        $this->details = $details;
     }
 
     /**
@@ -35,12 +35,12 @@ class InterventionNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-        
-                    ->greeting('Bonjour')
-                    ->subject($this->details['title'])
-                    ->line($this->details['body'])
-                    ->salutation('cordialement, Zenith');
-                
+
+            ->greeting('Bonjour')
+            ->subject($this->details['title'])
+            ->line($this->details['body'])
+            ->salutation('Cordialement, Zenith');
+
     }
 
     /**

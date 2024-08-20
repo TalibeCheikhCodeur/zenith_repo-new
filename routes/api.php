@@ -36,8 +36,9 @@ Route::post('/askIntervention', [InterventionController::class, 'askIntervention
 Route::put('/assignIntervention/{interventionId}/assign/{userId}', [InterventionController::class, 'asignIntervention']);
 Route::put('/fiche/{interventionId}', [InterventionController::class, 'ficheIntervention']);
 Route::get('/fiches', [InterventionController::class, 'allFiches']);
+Route::get("/myFiche/{id}", [InterventionController::class, 'showFiche']);
 Route::apiResource('/modules', ModuleController::class);
-// Route::apiResource('/modules', ModuleController::class);
+Route::apiResource('/user', UserController::class);
 Route::get('/clients', [UserController::class, 'allClients']);
 //route
 Route::get('/users', [UserController::class, 'allUsers']);
