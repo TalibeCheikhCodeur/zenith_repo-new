@@ -73,9 +73,9 @@ class UserController extends Controller
         $user->telephone = $request->input('telephone');
         $user->password = $request->input('password');
         $user->save();
-
         return response()->json(['message' => 'Utilisateur créé avec succès'], 200);
     }
+    
 
 
     /**

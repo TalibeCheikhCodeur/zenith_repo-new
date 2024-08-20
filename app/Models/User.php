@@ -43,8 +43,8 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function modules():HasMany
+    public function modules()
     {
-        return $this->hasMany(Module::class);
+        return $this->belongsToMany(Module::class);
     }
 }

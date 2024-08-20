@@ -13,9 +13,9 @@ class Module extends Model
 
     protected $guarded = [];
 
-    public function user():BelongsTo
+    public function users()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(User::class);
     }
     public function module_interventions(): HasMany
     {
