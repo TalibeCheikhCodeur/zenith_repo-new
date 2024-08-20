@@ -15,7 +15,7 @@ class GammeController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    { 
+    {
         $gammes = Gamme::all();
         return $this->response(Response::HTTP_OK, "Liste des gammes récupérée avec succès", ["gammes" => $gammes]);
     }
@@ -39,8 +39,8 @@ class GammeController extends Controller
      * Display the specified resource.
      */
     public function show(Gamme $gamme)
-    { 
-            if (!$gamme) {
+    {
+        if (!$gamme) {
             return $this->response(Response::HTTP_NOT_FOUND, "La gamme n'existe pas", ['gamme' => []]);
         }
 
@@ -52,14 +52,14 @@ class GammeController extends Controller
      */
     public function update(StoreGammeRequest $request, Gamme $gamme)
     {
-            if (!$gamme) {
+        if (!$gamme) {
             return $this->response(Response::HTTP_NOT_FOUND, "La gamme n'existe pas", ['gamme' => []]);
         }
 
         $gamme->update([
             'libelle' => $request->libelle,
             'description' => $request->description,
-            
+
         ]);
 
         return $this->response(Response::HTTP_OK, "La gamme a été mise à jour avec succès", ["gamme" => $gamme]);

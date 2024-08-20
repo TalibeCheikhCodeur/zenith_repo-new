@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ExportRequest;
+use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\UserRequest;
+use App\Jobs\SendEmailJob;
 use App\Models\User;
 use App\Traits\FormatResponse;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Resources\UserResource;
@@ -12,29 +17,23 @@ use App\Http\Resources\ClientResource;
 class UserController extends Controller
 {
     use FormatResponse;
+
+    const MESSAGE_USER = 'Utilisateur créé avec succes';
+    const MESSAGE_PASSWORD = 'Voici votre mot de passe par defaut: ';
     /**
      * Display a listing of the resource.
      */
     public function allClients()
     {
-        // $clients = User::where('role', 'client')->get();
-        // return Response()->json(ClientResource::collection($clients));
-        // By me
-        $clients = ClientResource::collection( User::where('role', 'client')->get());
+        $clients = ClientResource::collection(User::where('role', 'client')->get());
         return $this->response(Response::HTTP_OK, 'Voici la liste des clients', ['clients' => $clients]);
     }
 
     public function allUsers()
     {
-        // $users = User::whereNot('role', 'client')->get();
-        // return Response()->json(UserResource::collection($users));
-        // By me
-        $users = UserResource::collection( User::whereNot('role', 'client')->get());
+        $users = UserResource::collection(User::whereNot('role', 'client')->get());
         return $this->response(Response::HTTP_OK, 'Voici la liste des utilisateurs', ['users' => $users]);
     }
-
-
-
 
     /**
      * Show the form for creating a new resource.
@@ -47,35 +46,94 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        $minValidate='nullable|string|max:100';
+        $allRequest = $request->all();
+        $newUser = [
+            "nom" => $allRequest['nom'] ?? null,
+            "nom_client" => $allRequest['nom_client'] ?? null,
+            "code_client" => $allRequest['code_client'] ?? null,
+            "prenom" => $allRequest['prenom'] ?? null,
+            "role" => $allRequest['role'],
+            "email" => $allRequest['email'],
+            "password" => $allRequest['password'],
+            "telephone" => $allRequest['telephone'],
+        ];
 
-        $request->validate([
-            'nom' => $minValidate,
-            'nom_client' => $minValidate,
-            'code_client' => $minValidate,
-            'prenom' => $minValidate,
-            "telephone"=>$minValidate,
-            'role' => 'required|in:consultant,DG,COT,DPT,client',
-            'email' => 'nullable|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed', // le champ confirmed vérifie que password et password_confirmation sont identiques
-        ]);
+        DB::transaction();
 
-        $user = new User();
-        $user->nom = $request->input('nom');
-        $user->nom_client = $request->input('nom_client');
-        $user->code_client = $request->input('code_client');
-        $user->prenom = $request->input('prenom');
-        $user->role = $request->input('role');
-        $user->telephone = $request->input('telephone');
-        $user->email = $request->input('email');
-        $user->telephone = $request->input('telephone');
-        $user->password = $request->input('password');
-        $user->save();
-        return response()->json(['message' => 'Utilisateur créé avec succès'], 200);
+        try {
+
+            $user = User::create($newUser);
+
+            $details = [
+                "title" => "Informations de connexion",
+                "body" => UserController::MESSAGE_PASSWORD . 12345678 . ". Vous pouvez le changer en vous connectant via ce lien: http://localhost:4200/"
+            ];
+
+            DB::commit();
+            SendEmailJob::dispatch($details, [$newUser['email']]);
+
+            if ($request->code_client != null) {
+                return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => new ClientResource($user)]);
+            }
+            return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => new UserResource($user)]);
+        } catch (\Throwable $th) {
+
+            DB::rollBack();
+
+            return $this->response(Response::HTTP_INTERNAL_SERVER_ERROR, $th->getMessage(), []);
+        }
     }
-    
+
+    public function insertData(ExportRequest $request)
+    {
+        $allRequest = $request->all();
+        $newUsers = [];
+        foreach ($allRequest as $req) {
+            $newUsers[] = [
+                "nom" => $req['nom'] ?? null,
+                "nom_client" => $req['nom_client'] ?? null,
+                "code_client" => $req['code_client'] ?? null,
+                "prenom" => $req['prenom'] ?? null,
+                "role" => $req['role'],
+                "email" => $req['email'],
+                "password" => bcrypt($req['password']),
+                "telephone" => $req['telephone'],
+            ];
+        }
+
+        User::insert($newUsers);
+
+
+        foreach ($newUsers as $user) {
+            $createdUser = User::where('email', $user['email'])->first();
+            $details = [
+                "title" => "Informations de connexion",
+                "body" => UserController::MESSAGE_PASSWORD . 12345678 . ". Vous pouvez le changer en vous connectant via ce lien: http://localhost:4200/"
+            ];
+            SendEmailJob::dispatch($details, [$user['email']]);
+
+
+            $modulesData = [];
+            foreach ($req['modulesClient'] as $module) {
+                $modulesData[$module['module_id']] = [
+                    'numero_serie' => $module['numero_serie'],
+                    'version' => $module['version'],
+                    'code_annuel' => $module['code_annuel'],
+                    'code_activation' => $module['code_activation'],
+                    'nbre_users' => $module['nbre_users'],
+                    'nbre_salariés' => $module['nbre_salariés'],
+                    
+                ];
+            }
+
+            $createdUser->modules()->attach($modulesData);
+        }
+
+        return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => $newUsers]);
+    }
+
 
 
     /**
@@ -99,7 +157,12 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $user->update($request->all());
+        if ($request->has("code_client")) {
+            return $this->response(Response::HTTP_OK, "Modification réussie !", ["utilisateur" => new ClientResource($user)]);
+        }
+        return $this->response(Response::HTTP_OK, "Modification réussie !", ["utilisateur" => new UserResource($user)]);
+
     }
 
     /**
@@ -107,6 +170,11 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $user = User::findOrFail($user->id);
+        $user->delete();
+        $responseData = [
+            'users' => new UserResource($user),
+        ];
+        return $this->response(Response::HTTP_OK, 'Utilisateur supprimé avec succès', $responseData);
     }
 }

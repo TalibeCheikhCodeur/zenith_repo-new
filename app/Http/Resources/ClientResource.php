@@ -23,7 +23,7 @@ class ClientResource extends JsonResource
             'code_client' => $this->code_client,
             'telephone' =>$this->telephone,
             'email' => $this->email,
-            'modules' => $this->modules
+            // 'modules' => $this->modules
         ];
     }
 }
