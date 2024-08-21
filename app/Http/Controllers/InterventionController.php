@@ -54,7 +54,6 @@ class InterventionController extends Controller
 
     public function askIntervention(Request $request)
     {
-        dd('bonjour');
         // Validation des entrées (optionnel mais recommandé)
         $request->validate([
             'module_ids' => 'required|array',
@@ -88,7 +87,6 @@ class InterventionController extends Controller
                     $intervention->image = null;
                     $intervention->path_image = null;
                 }
-                dd('success');
             }
 
             $intervention->user_id = 1;

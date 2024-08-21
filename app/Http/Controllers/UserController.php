@@ -134,6 +134,45 @@ class UserController extends Controller
         return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => $newUsers]);
     }
 
+    public function updateData(Request $request, $userId)
+    {
+        // Récupération de l'utilisateur existant
+        $user = User::findOrFail($userId);
+        // return $user
+        // Mise à jour des informations de l'utilisateur
+        $user->update([
+            "nom" => $request->input('nom', $user->nom),
+            "nom_client" => $request->input('nom_client', $user->nom_client),
+            "code_client" => $request->input('code_client', $user->code_client),
+            "prenom" => $request->input('prenom', $user->prenom),
+            "role" => $request->input('role', $user->role),
+            "email" => $request->input('email', $user->email),
+            "telephone" => $request->input('telephone', $user->telephone),
+            "password" => $request->has('password') ? bcrypt($request->input('password')) : $user->password,
+        ]);
+    
+        // Mise à jour des modules associés
+        if ($request->has('modulesClient')) {
+            $modulesData = [];
+            foreach ($request->input('modulesClient') as $module) {
+                $modulesData[$module['module_id']] = [
+                    'numero_serie' => $module['numero_serie'],
+                    'version' => $module['version'],
+                    'code_annuel' => $module['code_annuel'],
+                    'code_activation' => $module['code_activation'],
+                    'nbre_users' => $module['nbre_users'],
+                    'nbre_salariés' => $module['nbre_salariés'],
+                ];
+            }
+    
+            // Détacher les anciens modules et attacher les nouveaux
+            $user->modules()->sync($modulesData);
+        }
+    
+        // Retourner une réponse avec les informations mises à jour
+        return $this->response(Response::HTTP_OK, "Utilisateur mis à jour avec succès", ["utilisateur" => $user]);
+    }
+    
 
 
     /**

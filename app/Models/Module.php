@@ -15,16 +15,21 @@ class Module extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class,'module_clients');
+        return $this->belongsToMany(User::class, 'module_clients');
     }
+    public function moduleClient(): HasMany
+    {
+        return $this->hasMany(ModuleClient::class, 'module_id');
+    }
+
     public function module_interventions(): HasMany
     {
-        return $this->hasMany(Module_intervention::class,'module_id');
+        return $this->hasMany(Module_intervention::class, 'module_id');
     }
-      
+
     public function gamme(): BelongsTo
     {
-        return $this->belongsTo(Gamme::class,'gamme_id');
-     }
-    
+        return $this->belongsTo(Gamme::class, 'gamme_id');
+    }
+
 }
