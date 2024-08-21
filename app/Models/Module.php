@@ -13,12 +13,18 @@ class Module extends Model
 
     protected $guarded = [];
 
-    public function user():BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
     public function module_interventions(): HasMany
     {
-        return $this->hasMany(Module_intervention::class,'module_id');
+        return $this->hasMany(Module_intervention::class, 'module_id');
     }
+
+    public function gamme(): BelongsTo
+    {
+        return $this->belongsTo(Gamme::class, 'gamme_id');
+    }
+
 }
