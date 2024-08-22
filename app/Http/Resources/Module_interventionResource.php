@@ -14,6 +14,6 @@ class Module_interventionResource extends JsonResource
      */
     public function toArray(Request $request)
     {
-        return new ModuleResource($this->module);
+        return new ModulesClientResource($this->module);
     }
 }

@@ -134,7 +134,10 @@ class UserController extends Controller
         return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => $newUsers]);
     }
 
- 
+    public function updateData(){
+        return "client mis à jour avec succès";
+    }
+
     
 
 
