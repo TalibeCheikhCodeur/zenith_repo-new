@@ -2,17 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ModulesClientResource;
 use App\Models\ModuleClient;
+use App\Traits\FormatResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+
 
 class ModuleClientController extends Controller
 {
+    use FormatResponse;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $modulClient= ModuleClient::all();
+        $allModuleClient=$modulClient->unique("user_id")->values();
+    
+        return $this->response(Response::HTTP_OK, "liste de tous les modulesClient", ["modulesClient" => ModulesClientResource::collection($allModuleClient)]);
     }
 
     /**

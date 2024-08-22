@@ -26,6 +26,7 @@ class InterventionResource extends JsonResource
             'image'  => $this->image,
             'path_image' => $this->path_image,
             'consultantId' => $this->user_id,
+            // 'module_client' => Modules_clientResource::collection($this->moduleClient),
             'modules' => Module_interventionResource::collection($this->moduleIntervention),
             'assigner' => $this->isAssigned,
             'cloturer' => $this->isClotured,

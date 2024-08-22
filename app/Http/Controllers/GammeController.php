@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Http\Requests\StoreGammeRequest;
+use App\Http\Resources\GammeResource;
 use Illuminate\Http\Response;
 
 use App\Models\Gamme;
@@ -17,7 +18,7 @@ class GammeController extends Controller
     public function index()
     {
         $gammes = Gamme::all();
-        return $this->response(Response::HTTP_OK, "Liste des gammes récupérée avec succès", ["gammes" => $gammes]);
+        return $this->response(Response::HTTP_OK, "Liste des gammes récupérée avec succès", ["gammes" =>GammeResource::collection($gammes) ]);
     }
 
     /**
@@ -32,7 +33,7 @@ class GammeController extends Controller
             'description' => $request->description,
 
         ]);
-        return $this->response(Response::HTTP_OK, "La gamme a été ajoutée avec succès", [ "Gamme" => new GammeResource($gamme)]);
+        return $this->response(Response::HTTP_OK, "La gamme a été ajoutée avec succès", [ "Gamme" =>$gamme]);
     }
 
     /**

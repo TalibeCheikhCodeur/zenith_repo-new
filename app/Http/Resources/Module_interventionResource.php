@@ -14,9 +14,6 @@ class Module_interventionResource extends JsonResource
      */
     public function toArray(Request $request)
     {
-        return [
-          "moduleIntervention" =>  ClientResource::collection($this->modules)
-        ];
-
+        return new ModuleResource($this->module);
     }
 }

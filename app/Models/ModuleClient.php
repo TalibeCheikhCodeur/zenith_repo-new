@@ -10,12 +10,12 @@ class ModuleClient extends Model
 
     use HasFactory;
     protected $guarded=[];
-    public function module():BelongsTo
+    public function module()
     {
         return $this->belongsTo(Module::class);
     }
 
-    public function user():BelongsTo
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
