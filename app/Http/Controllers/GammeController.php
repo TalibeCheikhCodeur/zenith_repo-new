@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 use App\Http\Requests\StoreGammeRequest;
 use Illuminate\Http\Response;
-
 use App\Models\Gamme;
 use App\Traits\FormatResponse;
 use Illuminate\Http\Request;
+use App\Http\Resources\GammeResource;
+
+
 
 class GammeController extends Controller
 {
@@ -69,15 +71,12 @@ class GammeController extends Controller
      */
     public function destroy(Gamme $gamme)
     {
-        if (!$gamme) {
+        if (!$gamme)
+        {
             return $this->response(Response::HTTP_NOT_FOUND, "La gamme n'existe pas", ['gamme' => []]);
         }
-
         $gamme->delete();
-
         $gammes = Gamme::all();
-
-
         return $this->response(Response::HTTP_OK, "La gamme a été supprimée avec succès", ["modules"=>GammeResource::collection($gammes)]);
     }
 }
