@@ -33,7 +33,7 @@ class GammeController extends Controller
             'description' => $request->description,
 
         ]);
-        return $this->response(Response::HTTP_OK, "La gamme a été ajoutée avec succès", [ "Gamme" =>$gamme]);
+        return $this->response(Response::HTTP_OK, "La gamme a été ajoutée avec succès", [ "gamme" =>$gamme]);
     }
 
     /**
@@ -62,7 +62,7 @@ class GammeController extends Controller
             'libelle' => $request->libelle,
             'description' => $request->description,
         ]);
-        return $this->response(Response::HTTP_OK, "La gamme a été mise à jour avec succès", ["module" => new GammeResource($gamme)]);
+        return $this->response(Response::HTTP_OK, "La gamme a été mise à jour avec succès", ["gamme" => new GammeResource($gamme)]);
     }
 
     /**
@@ -79,6 +79,6 @@ class GammeController extends Controller
         $gammes = Gamme::all();
 
 
-        return $this->response(Response::HTTP_OK, "La gamme a été supprimée avec succès", ["modules"=>GammeResource::collection($gammes)]);
+        return $this->response(Response::HTTP_OK, "La gamme a été supprimée avec succès", ["gamme"=>GammeResource::collection($gammes)]);
     }
 }

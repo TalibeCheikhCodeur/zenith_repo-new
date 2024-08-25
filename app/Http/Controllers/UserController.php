@@ -86,59 +86,63 @@ class UserController extends Controller
         }
     }
 
+
+
     public function insertData(ExportRequest $request)
-    {
-        $allRequest = $request->all();
-        $newUsers = [];
-        foreach ($allRequest as $req) {
-            $newUsers[] = [
-                "nom" => $req['nom'] ?? null,
-                "nom_client" => $req['nom_client'] ?? null,
-                "code_client" => $req['code_client'] ?? null,
-                "prenom" => $req['prenom'] ?? null,
-                "role" => $req['role'],
-                "email" => $req['email'],
-                "password" => bcrypt($req['password']),
-                "telephone" => $req['telephone'],
-            ];
-        }
-
-        User::insert($newUsers);
-
-
-        foreach ($newUsers as $user) {
-            $createdUser = User::where('email', $user['email'])->first();
-            $details = [
-                "title" => "Informations de connexion",
-                "body" => UserController::MESSAGE_PASSWORD . 12345678 . ". Vous pouvez le changer en vous connectant via ce lien: http://localhost:4200/"
-            ];
-            SendEmailJob::dispatch($details, [$user['email']]);
-
-
-            $modulesData = [];
-            foreach ($req['modulesClient'] as $module) {
-                $modulesData[$module['module_id']] = [
-                    'numero_serie' => $module['numero_serie'],
-                    'version' => $module['version'],
-                    'code_annuel' => $module['code_annuel'],
-                    'code_activation' => $module['code_activation'],
-                    'nbre_users' => $module['nbre_users'],
-                    'nbre_salariés' => $module['nbre_salariés'],
-                    
-                ];
-            }
-
-            $createdUser->modules()->attach($modulesData);
-        }
-
-        return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => $newUsers]);
-    }
-
-    public function updateData(){
-        return "client mis à jour avec succès";
-    }
-
+{
+    $allRequest = $request->all();
+    $newUsers = [];
     
+    foreach ($allRequest as $req) {
+        $newUsers[] = [
+            "nom" => $req['nom'] ?? null,
+            "nom_client" => $req['nom_client'] ?? null,
+            "code_client" => $req['code_client'] ?? null,
+            "prenom" => $req['prenom'] ?? null,
+            "role" => $req['role'],
+            "email" => $req['email'],
+            "password" => bcrypt($req['password']),
+            "telephone" => $req['telephone'],
+        ];
+    }
+
+    User::insert($newUsers);
+
+    foreach ($allRequest as $req) {
+        $createdUser = User::where('email', $req['email'])->first();
+
+        $details = [
+            "title" => "Informations de connexion",
+            "body" => UserController::MESSAGE_PASSWORD . 12345678 . ". Vous pouvez le changer en vous connectant via ce lien: http://localhost:4200/"
+        ];
+        SendEmailJob::dispatch($details, [$req['email']]);
+
+        $modulesData = [];
+        foreach ($req['modulesClient'] as $module) {
+            $modulesData[$module['module_id']] = [
+                'numero_serie' => $module['numero_serie'],
+                'version' => $module['version'],
+                'code_annuel' => $module['code_annuel'],
+                'code_activation' => $module['code_activation'],
+                'nbre_users' => $module['nbre_users'],
+                'nbre_salariés' => $module['nbre_salariés'],
+            ];
+        }
+
+        $createdUser->modules()->attach($modulesData);
+    }
+
+    return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => $newUsers]);
+}
+
+
+
+    public function updateData()
+    {
+        // return "client mis à jour avec succès";
+    }
+
+
 
 
     /**
