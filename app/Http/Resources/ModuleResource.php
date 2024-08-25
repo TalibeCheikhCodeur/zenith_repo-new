@@ -16,7 +16,7 @@ class ModuleResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'nom_produit' =>$this->nom_produit ,
+            'nom_produit' => $this->nom_produit,
             "gamme" => new GammeResource($this->gamme),
         ];
     }

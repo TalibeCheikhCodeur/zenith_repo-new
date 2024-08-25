@@ -13,9 +13,9 @@ class Module extends Model
 
     protected $guarded = [];
 
-    public function user(): BelongsTo
+    public function users()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(User::class, 'module_clients')->withPivot(['numero_serie', 'version', 'code_annuel', 'code_activation', 'nbre_users', 'nbre_salariés']);
     }
     public function module_interventions(): HasMany
     {
@@ -25,6 +25,11 @@ class Module extends Model
     public function gamme(): BelongsTo
     {
         return $this->belongsTo(Gamme::class, 'gamme_id');
+    }
+
+    public function module_client()
+    {
+        return $this->hasMany(ModuleClient::class);
     }
 
 }

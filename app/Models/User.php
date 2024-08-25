@@ -44,8 +44,12 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function modules(): HasMany
+    public function modules()
     {
-        return $this->hasMany(Module::class);
+        return $this->belongsToMany(Module::class, 'module_clients')->withPivot(['numero_serie', 'version', 'code_annuel', 'code_activation', 'nbre_users', 'nbre_salariés']);
+    }
+    public function moduleClient(): HasMany
+    {
+        return $this->hasMany(ModuleClient::class);
     }
 }

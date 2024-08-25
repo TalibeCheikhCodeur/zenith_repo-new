@@ -23,12 +23,9 @@ class StoreModuleRequest extends FormRequest
     {
         return [
 
-            'types_produit' => 'required',
             'nom_produit' => 'required',
-            'gamme' => 'required',
-            'numero_serie' => 'required',
-            'code_annuel' => 'required',
-            'user_id' => 'required'
+            'gamme_id' => 'required',
+           
         ];
     }
 }

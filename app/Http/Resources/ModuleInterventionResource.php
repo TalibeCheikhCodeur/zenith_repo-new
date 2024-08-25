@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class Module_interventionResource extends JsonResource
+class ModuleInterventionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,6 +14,6 @@ class Module_interventionResource extends JsonResource
      */
     public function toArray(Request $request)
     {
-        return new ModuleResource($this->module);
+        return new ModulesClientResource($this->module);
     }
 }

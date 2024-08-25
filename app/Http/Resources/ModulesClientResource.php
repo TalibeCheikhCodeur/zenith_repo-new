@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class GammeResource extends JsonResource
+class ModulesClientResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,8 +16,7 @@ class GammeResource extends JsonResource
     {
         return [
             "id" => $this->id,
-            "libelle" => $this->libelle,
-            "description" => $this->description,
+            'client' => new ClientResource($this->user),
         ];
     }
 }
