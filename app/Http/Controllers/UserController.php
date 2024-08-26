@@ -140,9 +140,7 @@ class UserController extends Controller
 
 public function updateData(Request $request, $id)
 {
-    // Récupérer l'utilisateur existant
     $user = User::findOrFail($id);
-    // Mettre à jour les informations de l'utilisateur
     $user->update([
         'nom' => $request->nom,
         'prenom' => $request->prenom,
@@ -153,14 +151,12 @@ public function updateData(Request $request, $id)
         'telephone' => $request->telephone,
     ]);
 
-    // Mettre à jour le mot de passe si fourni
     if ($request->filled('password')) {
         $user->update([
             'password' => bcrypt($request->input('password')),
         ]);
     }
 
-    // Mise à jour des modules associés
     if ($request->has('modulesClient')) {
         $modulesData = [];
         foreach ($request->input('modulesClient', []) as $module) {
@@ -174,10 +170,8 @@ public function updateData(Request $request, $id)
             ];
         }
 
-        // Synchroniser les modules (ajouter/supprimer ceux qui ne sont plus pertinents)
-        $user->modules()->syncWithoutDetaching($modulesData);
+        $user->modules()->sync($modulesData);
     }
-    // Retourner la réponse de succès
     return $this->response(Response::HTTP_OK, "Utilisateur mis à jour avec succès.", ["utilisateur" => $user]);
 }
 
