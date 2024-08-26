@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ModuleIntervention;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Mail\NotifMail;
@@ -57,7 +58,7 @@ class InterventionController extends Controller
         // Validation des entrées (optionnel mais recommandé)
         $request->validate([
             'module_ids' => 'required|array',
-            'module_ids.*' => 'exists:modules,id', // Assurez-vous que le module existe dans la table modules
+            'module_ids.*' => 'exists:module_clients,id', // Assurez-vous que le module existe dans la table modules
         ]);
 
         $description = $request->input('description');
@@ -89,16 +90,16 @@ class InterventionController extends Controller
                 }
             }
 
-            $intervention->user_id = 1;
+            // $intervention->user_id = 1;
 
             $intervention->save();
 
             if (!empty($moduleIds)) {
-                Module_intervention::where('intervention_id', $intervention->id)->delete();
+                ModuleIntervention::where('intervention_id', $intervention->id)->delete();
 
                 foreach ($moduleIds as $moduleId) {
-                    Module_intervention::create([
-                        'module_id' => $moduleId,
+                    ModuleIntervention::create([
+                        'module_client_id' => $moduleId,
                         'intervention_id' => $intervention->id,
                     ]);
                 }
@@ -230,8 +231,7 @@ class InterventionController extends Controller
             return $this->response(Response::HTTP_INTERNAL_SERVER_ERROR, "Cette intervention n'existe pas!", []);
         }
 
-        $fiche = Intervention::with(['modules', 'user'])
-            ->whereNotNull(['user_id', 'debut_intervention'])
+        $fiche = Intervention::whereNotNull(['user_id', 'debut_intervention'])
             ->where("id", $id)
             ->first();
 

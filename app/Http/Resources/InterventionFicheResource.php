@@ -23,13 +23,12 @@ class InterventionFicheResource extends JsonResource
             'fin_intervention' => $this->fin_intervention,
             'caractere_intervention' => $this->caractere_intervention,
             'user' => new UserResource($this->user),
-            'modules' => Module_interventionResource::collection($this->moduleIntervention),
+            'modules' => ModuleInterventionResource::collection($this->moduleIntervention),
             'assigner' => $this->isAssigned,
             'cloturer' => $this->isClotured,
             'duree' => $this->durée,
             "trableShooting" => $this->trableShooting,
             "observation" => new InterventionNoteResource($this->notes->first()),
-            "duree" => $this->durée,
             "date_demande" => $this->created_at
         ];
     }

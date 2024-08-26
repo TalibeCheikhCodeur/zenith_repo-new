@@ -94,6 +94,7 @@ class UserController extends Controller
     {
         $allRequest = $request->all();
         $newUsers = [];
+
         foreach ($allRequest as $req) {
             $newUsers[] = [
                 "nom" => $req['nom'] ?? null,
@@ -109,15 +110,14 @@ class UserController extends Controller
 
         User::insert($newUsers);
 
+        foreach ($allRequest as $req) {
+            $createdUser = User::where('email', $req['email'])->first();
 
-        foreach ($newUsers as $user) {
-            $createdUser = User::where('email', $user['email'])->first();
             $details = [
                 "title" => "Informations de connexion",
                 "body" => UserController::MESSAGE_PASSWORD . 12345678 . ". Vous pouvez le changer en vous connectant via ce lien: http://localhost:4200/"
             ];
-            SendEmailJob::dispatch($details, [$user['email']]);
-
+            SendEmailJob::dispatch($details, [$req['email']]);
 
             $modulesData = [];
             foreach ($req['modulesClient'] as $module) {
@@ -128,7 +128,6 @@ class UserController extends Controller
                     'code_activation' => $module['code_activation'],
                     'nbre_users' => $module['nbre_users'],
                     'nbre_salariés' => $module['nbre_salariés'],
-
                 ];
             }
 
@@ -138,10 +137,11 @@ class UserController extends Controller
         return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => $newUsers]);
     }
 
-    
+
+
     public function updateData()
     {
-        return "client mis à jour avec succès";
+        // return "client mis à jour avec succès";
     }
 
 

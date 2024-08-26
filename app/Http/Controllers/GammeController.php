@@ -61,6 +61,7 @@ class GammeController extends Controller
             'description' => $request->description,
         ]);
         return $this->response(Response::HTTP_OK, "La gamme a été mise à jour avec succès", ["gamme" => new GammeResource($gamme)]);
+        return $this->response(Response::HTTP_OK, "La gamme a été mise à jour avec succès", ["gamme" => new GammeResource($gamme)]);
     }
 
     /**

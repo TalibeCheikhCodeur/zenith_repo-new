@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreModule_interventionRequest;
 use App\Http\Requests\UpdateModule_interventionRequest;
 use App\Models\Module_intervention;
+use App\Models\ModuleIntervention;
 
 class ModuleInterventionController extends Controller
 {
@@ -35,7 +36,7 @@ class ModuleInterventionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Module_intervention $module_intervention)
+    public function show(ModuleIntervention $module_intervention)
     {
         //
     }
@@ -43,7 +44,7 @@ class ModuleInterventionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Module_intervention $module_intervention)
+    public function edit(ModuleIntervention $module_intervention)
     {
         //
     }
@@ -51,7 +52,7 @@ class ModuleInterventionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateModule_interventionRequest $request, Module_intervention $module_intervention)
+    public function update(UpdateModule_interventionRequest $request, ModuleIntervention $module_intervention)
     {
         //
     }
@@ -59,7 +60,7 @@ class ModuleInterventionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Module_intervention $module_intervention)
+    public function destroy(ModuleIntervention $module_intervention)
     {
         //
     }

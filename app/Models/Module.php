@@ -19,7 +19,7 @@ class Module extends Model
     }
     public function module_interventions(): HasMany
     {
-        return $this->hasMany(Module_intervention::class, 'module_id');
+        return $this->hasMany(ModuleIntervention::class, 'module_id');
     }
 
     public function gamme(): BelongsTo

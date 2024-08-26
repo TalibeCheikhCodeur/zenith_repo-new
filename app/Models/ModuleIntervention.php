@@ -6,18 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Module_intervention extends Model
+class ModuleIntervention extends Model
 {
     use HasFactory;
-
     protected $guarded = [];
 
-    public function module():BelongsTo
+    public function moduleClient(): BelongsTo
     {
-        return $this->belongsTo(Module::class);
+        return $this->belongsTo(ModuleClient::class);
     }
 
-    public function intervention():BelongsTo
+    public function intervention(): BelongsTo
     {
         return $this->belongsTo(Intervention::class);
     }
