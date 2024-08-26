@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ExportRequest;
-use App\Http\Requests\UpdateUserRequest;
-use App\Http\Requests\UserRequest;
-use App\Jobs\SendEmailJob;
 use App\Models\User;
-use App\Traits\FormatResponse;
-use DB;
+use App\Jobs\SendEmailJob;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Traits\FormatResponse;
+use App\Http\Requests\UserRequest;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests\ExportRequest;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\ClientResource;
+use App\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
