@@ -15,16 +15,8 @@ class ModulesClientResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "id"=> $this->id,
+            "id" => $this->id,
             'client' => new ClientResource($this->user),
-
-            // 'module_id' => new ModuleResource($this->module),
-            // 'numero_serie' => $this->numero_serie,
-            // 'version' => $this->version,
-            // 'code_annuel' => $this->code_annuel,
-            // 'code_activation' => $this->code_activation,
-            // 'nbre_users' => $this->nbre_users,
-            // 'nbre_salariés' => $this->nbre_salariés
         ];
     }
 }

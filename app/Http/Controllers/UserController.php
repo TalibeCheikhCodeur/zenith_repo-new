@@ -60,11 +60,15 @@ class UserController extends Controller
             "telephone" => $allRequest['telephone'],
         ];
 
-        DB::transaction();
+        $modulesClient = $request['modulesClient'];
+
+        DB::beginTransaction();
 
         try {
 
             $user = User::create($newUser);
+
+            $user->modules()->attach($modulesClient);
 
             $details = [
                 "title" => "Informations de connexion",
@@ -86,54 +90,52 @@ class UserController extends Controller
         }
     }
 
-
-
     public function insertData(ExportRequest $request)
-{
-    $allRequest = $request->all();
-    $newUsers = [];
-    
-    foreach ($allRequest as $req) {
-        $newUsers[] = [
-            "nom" => $req['nom'] ?? null,
-            "nom_client" => $req['nom_client'] ?? null,
-            "code_client" => $req['code_client'] ?? null,
-            "prenom" => $req['prenom'] ?? null,
-            "role" => $req['role'],
-            "email" => $req['email'],
-            "password" => bcrypt($req['password']),
-            "telephone" => $req['telephone'],
-        ];
-    }
+    {
+        $allRequest = $request->all();
+        $newUsers = [];
 
-    User::insert($newUsers);
-
-    foreach ($allRequest as $req) {
-        $createdUser = User::where('email', $req['email'])->first();
-
-        $details = [
-            "title" => "Informations de connexion",
-            "body" => UserController::MESSAGE_PASSWORD . 12345678 . ". Vous pouvez le changer en vous connectant via ce lien: http://localhost:4200/"
-        ];
-        SendEmailJob::dispatch($details, [$req['email']]);
-
-        $modulesData = [];
-        foreach ($req['modulesClient'] as $module) {
-            $modulesData[$module['module_id']] = [
-                'numero_serie' => $module['numero_serie'],
-                'version' => $module['version'],
-                'code_annuel' => $module['code_annuel'],
-                'code_activation' => $module['code_activation'],
-                'nbre_users' => $module['nbre_users'],
-                'nbre_salariés' => $module['nbre_salariés'],
+        foreach ($allRequest as $req) {
+            $newUsers[] = [
+                "nom" => $req['nom'] ?? null,
+                "nom_client" => $req['nom_client'] ?? null,
+                "code_client" => $req['code_client'] ?? null,
+                "prenom" => $req['prenom'] ?? null,
+                "role" => $req['role'],
+                "email" => $req['email'],
+                "password" => bcrypt($req['password']),
+                "telephone" => $req['telephone'],
             ];
         }
 
-        $createdUser->modules()->attach($modulesData);
-    }
+        User::insert($newUsers);
 
-    return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => $newUsers]);
-}
+        foreach ($allRequest as $req) {
+            $createdUser = User::where('email', $req['email'])->first();
+
+            $details = [
+                "title" => "Informations de connexion",
+                "body" => UserController::MESSAGE_PASSWORD . 12345678 . ". Vous pouvez le changer en vous connectant via ce lien: http://localhost:4200/"
+            ];
+            SendEmailJob::dispatch($details, [$req['email']]);
+
+            $modulesData = [];
+            foreach ($req['modulesClient'] as $module) {
+                $modulesData[$module['module_id']] = [
+                    'numero_serie' => $module['numero_serie'],
+                    'version' => $module['version'],
+                    'code_annuel' => $module['code_annuel'],
+                    'code_activation' => $module['code_activation'],
+                    'nbre_users' => $module['nbre_users'],
+                    'nbre_salariés' => $module['nbre_salariés'],
+                ];
+            }
+
+            $createdUser->modules()->attach($modulesData);
+        }
+
+        return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => $newUsers]);
+    }
 
 
 public function updateData(Request $request, $id)
@@ -205,12 +207,15 @@ public function updateData(Request $request, $id)
      */
     public function update(Request $request, User $user)
     {
-        $user->update($request->all());
-        if ($request->has("code_client")) {
-            return $this->response(Response::HTTP_OK, "Modification réussie !", ["utilisateur" => new ClientResource($user)]);
+        try {
+            $user->update($request->all());
+            if ($request->has("code_client") && $request->code_client != null) {
+                return $this->response(Response::HTTP_OK, "Modification réussie !", ["utilisateur" => new ClientResource($user)]);
+            }
+            return $this->response(Response::HTTP_OK, "Modification réussie !", ["utilisateur" => new UserResource($user)]);
+        } catch (\Throwable $th) {
+            return $this->response(Response::HTTP_INTERNAL_SERVER_ERROR, "La modificaion a échouée !", []);
         }
-        return $this->response(Response::HTTP_OK, "Modification réussie !", ["utilisateur" => new UserResource($user)]);
-
     }
 
     /**

@@ -18,7 +18,6 @@ class GammeResource extends JsonResource
             "id" => $this->id,
             "libelle" => $this->libelle,
             "description" => $this->description,
-            // "modules" => ModuleResource::collection($this->modules)
         ];
     }
 }

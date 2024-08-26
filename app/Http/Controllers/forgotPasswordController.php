@@ -11,7 +11,7 @@ use App\Traits\FormatResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class forgotPasswordController extends Controller
+class ForgotPasswordController extends Controller
 {
     use FormatResponse;
     public function forgot(Request $request)

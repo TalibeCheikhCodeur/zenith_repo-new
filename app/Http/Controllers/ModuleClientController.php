@@ -17,9 +17,9 @@ class ModuleClientController extends Controller
      */
     public function index()
     {
-        $modulClient= ModuleClient::all();
-        $allModuleClient=$modulClient->unique("user_id")->values();
-    
+        $modulClient = ModuleClient::all();
+        $allModuleClient = $modulClient->unique("user_id")->values();
+
         return $this->response(Response::HTTP_OK, "liste de tous les modulesClient", ["modulesClient" => ModulesClientResource::collection($allModuleClient)]);
     }
 
