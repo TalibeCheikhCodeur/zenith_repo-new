@@ -22,13 +22,8 @@ class StoreModuleRequest extends FormRequest
     public function rules(): array
     {
         return [
-
-            'types_produit' => 'required',
             'nom_produit' => 'required',
-            'gamme' => 'required',
-            'numero_serie' => 'required',
-            'code_annuel' => 'required',
-            'user_id' => 'required'
+            'gamme_id' => 'required',
         ];
     }
 }
