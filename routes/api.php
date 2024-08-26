@@ -52,7 +52,7 @@ Route::put('/cloture/{id}', [InterventionController::class, 'clotured']);
 Route::post('/forgot', [forgotPasswordController::class, 'forgot']);
 Route::post('/reset', [forgotPasswordController::class, 'reset']);
 Route::post('/insert', [UserController::class, 'insertData']);
-Route::put('/update/{userId}', [UserController::class, 'updateData']);
+Route::put('/update/{user}', [UserController::class, 'updateData']);
 Route::apiResource('/moduleClient', ModuleClientController::class);
 
 Route::apiResource('/gamme', GammeController::class);

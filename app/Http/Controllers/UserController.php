@@ -136,11 +136,50 @@ class UserController extends Controller
 }
 
 
+public function updateData(Request $request, $id)
+{
+    // Récupérer l'utilisateur existant
+    $user = User::findOrFail($id);
+    // Mettre à jour les informations de l'utilisateur
+    $user->update([
+        'nom' => $request->nom,
+        'prenom' => $request->prenom,
+        'nom_client' => $request->nom_client,
+        'code_client' => $request->code_client,
+        'role' => $request->role,
+        'email' => $request->email,
+        'telephone' => $request->telephone,
+    ]);
 
-    public function updateData()
-    {
-        // return "client mis à jour avec succès";
+    // Mettre à jour le mot de passe si fourni
+    if ($request->filled('password')) {
+        $user->update([
+            'password' => bcrypt($request->input('password')),
+        ]);
     }
+
+    // Mise à jour des modules associés
+    if ($request->has('modulesClient')) {
+        $modulesData = [];
+        foreach ($request->input('modulesClient', []) as $module) {
+            $modulesData[$module['module_id']] = [
+                'numero_serie' => $module['numero_serie'],
+                'version' => $module['version'],
+                'code_annuel' => $module['code_annuel'],
+                'code_activation' => $module['code_activation'],
+                'nbre_users' => $module['nbre_users'],
+                'nbre_salariés' => $module['nbre_salariés'],
+            ];
+        }
+
+        // Synchroniser les modules (ajouter/supprimer ceux qui ne sont plus pertinents)
+        $user->modules()->syncWithoutDetaching($modulesData);
+    }
+    // Retourner la réponse de succès
+    return $this->response(Response::HTTP_OK, "Utilisateur mis à jour avec succès.", ["utilisateur" => $user]);
+}
+
+
 
 
 
