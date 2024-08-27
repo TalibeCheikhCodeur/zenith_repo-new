@@ -138,15 +138,43 @@ class UserController extends Controller
     }
 
 
-
-    public function updateData()
+    public function updateData(Request $request, $id)
     {
-        // return "client mis à jour avec succès";
+        $user = User::findOrFail($id);
+        $user->update([
+            'nom' => $request->nom,
+            'prenom' => $request->prenom,
+            'nom_client' => $request->nom_client,
+            'code_client' => $request->code_client,
+            'role' => $request->role,
+            'email' => $request->email,
+            'telephone' => $request->telephone,
+        ]);
+
+        if ($request->filled('password')) {
+            $user->update([
+                'password' => bcrypt($request->input('password')),
+            ]);
+        }
+
+        if ($request->has('modulesClient')) {
+            $modulesData = [];
+            foreach ($request->input('modulesClient', []) as $module) {
+                $modulesData[$module['module_id']] = [
+                    'numero_serie' => $module['numero_serie'],
+                    'version' => $module['version'],
+                    'code_annuel' => $module['code_annuel'],
+                    'code_activation' => $module['code_activation'],
+                    'nbre_users' => $module['nbre_users'],
+                    'nbre_salariés' => $module['nbre_salariés'],
+                ];
+            }
+
+            $user->modules()->sync($modulesData);
+        }
+        return $this->response(Response::HTTP_OK, "Utilisateur mis à jour avec succès.", ["utilisateur" => $user]);
     }
-
-
-
-
+    
     /**
      * Display the specified resource.
      */
