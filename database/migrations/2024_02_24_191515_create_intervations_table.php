@@ -20,7 +20,8 @@ return new class extends Migration {
             $table->date('date_intervention')->nullable();
             $table->dateTime('debut_intervention')->nullable();
             $table->dateTime('fin_intervention')->nullable();
-            $table->foreignId('user_id')->constrained('users')->nullable()->onDelete('cascade')->onUpdate('cascade');
+            // $table->foreignId('user_id')->constrained('users')->nullable()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignIdFor(User::class)->nullable()->constrained('users')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

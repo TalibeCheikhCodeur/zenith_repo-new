@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Module::class)->constrained()->cascadeOnDelete();
-            $table->string('numero_serie');	
+            $table->string('numero_serie');
             $table->string('version');
             $table->string('code_annuel');
             $table->string('code_activation');

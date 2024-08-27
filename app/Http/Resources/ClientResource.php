@@ -25,6 +25,7 @@ class ClientResource extends JsonResource
             'email' => $this->email,
             'modules_client' => $this->modules->map(function ($module) {
                 return [
+                    "id" => $module->pivot->id,
                     "module"=> new ModuleResource($module),
                     "numero_serie" => $module->pivot->numero_serie,
                     "version" => $module->pivot->version,
