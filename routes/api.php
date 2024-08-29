@@ -32,7 +32,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::post("/login", [AuthController::class, "login"]);
-Route::get("/logout", [AuthController::class, "logout"]);
+Route::middleware('auth:sanctum')->get('/logout', [AuthController::class, 'logout']);
 Route::get('asks', [InterventionController::class, 'allAskInterventions']);
 Route::post('/askIntervention', [InterventionController::class, 'askIntervention']);
 Route::put('/assignIntervention/{interventionId}/assign/{userId}', [InterventionController::class, 'asignIntervention']);

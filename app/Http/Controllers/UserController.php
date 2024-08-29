@@ -137,49 +137,43 @@ class UserController extends Controller
         return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => $newUsers]);
     }
 
-
-public function updateData(Request $request, $id)
-{
-    $user = User::findOrFail($id);
-    $user->update([
-        'nom' => $request->nom,
-        'prenom' => $request->prenom,
-        'nom_client' => $request->nom_client,
-        'code_client' => $request->code_client,
-        'role' => $request->role,
-        'email' => $request->email,
-        'telephone' => $request->telephone,
-    ]);
-
-    if ($request->filled('password')) {
+    public function updateData(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
         $user->update([
-            'password' => bcrypt($request->input('password')),
+            'nom' => $request->nom,
+            'prenom' => $request->prenom,
+            'nom_client' => $request->nom_client,
+            'code_client' => $request->code_client,
+            'role' => $request->role,
+            'email' => $request->email,
+            'telephone' => $request->telephone,
         ]);
-    }
 
-    if ($request->has('modulesClient')) {
-        $modulesData = [];
-        foreach ($request->input('modulesClient', []) as $module) {
-            $modulesData[$module['module_id']] = [
-                'numero_serie' => $module['numero_serie'],
-                'version' => $module['version'],
-                'code_annuel' => $module['code_annuel'],
-                'code_activation' => $module['code_activation'],
-                'nbre_users' => $module['nbre_users'],
-                'nbre_salariés' => $module['nbre_salariés'],
-            ];
+        if ($request->filled('password')) {
+            $user->update([
+                'password' => bcrypt($request->input('password')),
+            ]);
         }
 
-        $user->modules()->sync($modulesData);
+        if ($request->has('modulesClient')) {
+            $modulesData = [];
+            foreach ($request->input('modulesClient', []) as $module) {
+                $modulesData[$module['module_id']] = [
+                    'numero_serie' => $module['numero_serie'],
+                    'version' => $module['version'],
+                    'code_annuel' => $module['code_annuel'],
+                    'code_activation' => $module['code_activation'],
+                    'nbre_users' => $module['nbre_users'],
+                    'nbre_salariés' => $module['nbre_salariés'],
+                ];
+            }
+
+            $user->modules()->sync($modulesData);
+        }
+        return $this->response(Response::HTTP_OK, "Utilisateur mis à jour avec succès.", ["utilisateur" => $user]);
     }
-    return $this->response(Response::HTTP_OK, "Utilisateur mis à jour avec succès.", ["utilisateur" => $user]);
-}
-
-
-
-
-
-
+    
     /**
      * Display the specified resource.
      */
