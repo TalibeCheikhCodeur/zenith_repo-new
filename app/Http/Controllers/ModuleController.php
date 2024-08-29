@@ -17,8 +17,8 @@ class ModuleController extends Controller
      */
     public function index()
     {
-        $modules = Module::all();
-        // return  response()->json(ModuleResource::collection($modules));
+        $modules = Module::with('gamme')->get();
+        // dd($modules);
         return $this->response(response::HTTP_OK,"liste de tous les modules",["modules"=>ModuleResource::collection($modules)]);
     }
 
@@ -38,7 +38,7 @@ class ModuleController extends Controller
     
         $module = Module::create($request->all());
         // return response()->json(['message' =>'module ajouté avec  succés', 'data'=>$module],Response::HTTP_OK);
-        return $this->response(Response::HTTP_OK,"Module ajouté avec succès",[ "modules" => new ModuleResource($module)]);
+        return $this->response(Response::HTTP_OK,"Module ajouté avec succès",[ "module" => new ModuleResource($module)]);
     }
 
     /**

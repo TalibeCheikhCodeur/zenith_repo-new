@@ -39,12 +39,10 @@ class NoteController extends Controller
         // dd('success');
 
         $note = Note::create([
-
             'title' => $request->title,
             'points' => $request->points,
             'commentaire' => $request->commentaire,
             'intervention_id' => $request->intervention_id,
-
         ]);
         return $this->response(Response::HTTP_OK, "La note a été ajoutée avec succès", ["note" =>new NoteResource($note)]);
     }

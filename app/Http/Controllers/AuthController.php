@@ -35,10 +35,18 @@ class AuthController extends Controller
 
     public function logout()
     {
-        Auth::guard('sanctum')->user()->tokens()->delete();
-        return Response([
-            'success' => true,
-            'message' => " Déconnexion réussi."
-        ], 200);
+        $user = Auth::guard('sanctum')->user();
+        if ($user) {
+            $user->tokens()->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'Déconnexion réussie.'
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Utilisateur non authentifié.'
+            ], 401);
+        }
     }
 }

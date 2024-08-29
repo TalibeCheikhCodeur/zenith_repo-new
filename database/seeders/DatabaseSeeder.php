@@ -17,16 +17,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::firstOrCreate(
-        [
-            'nom' => "LY",
-            'prenom' => "Cheikh",
-            'email' => "kha@gmail.com",
-            'password' => Hash::make('12345678'),
-            'telephone' => "762525522",
-            'role' => "DG",
-            'created_at' => now()
-        ]);
+      
+
+        $this->call(UserSeeder::class);
 
         $this->call(RolesAndPermissionsSeeder::class);
     }

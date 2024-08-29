@@ -22,9 +22,9 @@ class Module extends Model
         return $this->hasMany(Module_intervention::class,'module_id');
     }
       
-    public function gamme(): BelongsTo
+    public function gamme()
     {
-        return $this->belongsTo(Gamme::class,'gamme_id');
+        return $this->belongsTo(Gamme::class);
      }
     
 }
