@@ -20,7 +20,7 @@ class SendEmailJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct($details,$emails)
+    public function __construct($details, $emails)
     {
         $this->details = $details;
         $this->emails = $emails;
@@ -38,6 +38,5 @@ class SendEmailJob implements ShouldQueue
                 $user->notify(new InterventionNotification($this->details));
             }
         }
-        // Mail::to($this->emails)->send(new NotifMail($this->details));
     }
 }

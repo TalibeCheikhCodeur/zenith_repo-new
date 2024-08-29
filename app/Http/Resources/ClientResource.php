@@ -15,12 +15,26 @@ class ClientResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "id"=> $this->id,
+            "id" => $this->id,
+            "nom" => $this->nom,
+            "prenom" => $this->prenom,
+            "role" => $this->role,
             'nom_client' => $this->nom_client,
             'code_client' => $this->code_client,
-            'telephone' =>$this->telephone,
+            'telephone' => $this->telephone,
             'email' => $this->email,
-            'modules' => $this->modules
+            'modules_client' => $this->modules->map(function ($module) {
+                return [
+                    "id" => $module->pivot->id,
+                    "module"=> new ModuleResource($module),
+                    "numero_serie" => $module->pivot->numero_serie,
+                    "version" => $module->pivot->version,
+                    "code_annuel" => $module->pivot->code_annuel,
+                    "code_activation" => $module->pivot->code_activation,
+                    "nbre_users" => $module->pivot->nbre_users,
+                    "nbre_salariés" => $module->pivot->nbre_salariés,
+                ];
+            })
         ];
     }
 }

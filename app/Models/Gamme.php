@@ -12,7 +12,7 @@ class Gamme extends Model
     protected $guarded = [];
 
 
-    public function modules():HasMany
+    public function modules()
     {
         return $this->hasMany(Module::class);
     }

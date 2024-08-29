@@ -2,12 +2,12 @@
 
 use App\Models\Intervention;
 use App\Models\Module;
+use App\Models\ModuleClient;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -15,8 +15,9 @@ return new class extends Migration
     {
         Schema::create('module_interventions', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Intervention::class)->constrained()->nullable()->onDelete('cascade')->onUpdate('cascade');   
-            $table->foreignIdFor(Module::class)->constrained()->nullable()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignIdFor(Intervention::class)->constrained()->nullable()->onDelete('cascade')->onUpdate('cascade');
+            // $table->foreignIdFor(Module::class)->constrained()->nullable()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignIdFor(ModuleClient::class)->constrained()->nullable()->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

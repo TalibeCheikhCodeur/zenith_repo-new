@@ -27,7 +27,7 @@ class Intervention extends Model
 
     public function moduleIntervention(): HasMany
     {
-        return $this->hasMany(Module_intervention::class);
+        return $this->hasMany(ModuleIntervention::class);
     }
 
     public function notes(): HasMany

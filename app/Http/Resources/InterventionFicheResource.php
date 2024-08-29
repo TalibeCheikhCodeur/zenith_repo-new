@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class InterventionResource extends JsonResource
+class InterventionFicheResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -22,15 +22,13 @@ class InterventionResource extends JsonResource
             'debut_intervention' => $this->debut_intervention,
             'fin_intervention' => $this->fin_intervention,
             'caractere_intervention' => $this->caractere_intervention,
-            'image' => $this->image,
-            'path_image' => $this->path_image,
-            'consultantId' => $this->user_id,
+            'user' => new UserResource($this->user),
             'modules' => ModuleInterventionResource::collection($this->moduleIntervention),
             'assigner' => $this->isAssigned,
             'cloturer' => $this->isClotured,
             'duree' => $this->durée,
             "trableShooting" => $this->trableShooting,
-            "notes" => new InterventionNoteResource($this->notes->first()),
+            "observation" => new InterventionNoteResource($this->notes->first()),
             "date_demande" => $this->created_at
         ];
     }

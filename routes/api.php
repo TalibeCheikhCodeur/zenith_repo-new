@@ -3,12 +3,14 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\forgotPasswordController;
 use App\Http\Controllers\InterventionController;
+use App\Http\Controllers\ModuleClientController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\RapportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GammeController;
 
+use App\Models\ModuleClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,8 +38,9 @@ Route::post('/askIntervention', [InterventionController::class, 'askIntervention
 Route::put('/assignIntervention/{interventionId}/assign/{userId}', [InterventionController::class, 'asignIntervention']);
 Route::put('/fiche/{interventionId}', [InterventionController::class, 'ficheIntervention']);
 Route::get('/fiches', [InterventionController::class, 'allFiches']);
+Route::get("/myFiche/{id}", [InterventionController::class, 'showFiche']);
 Route::apiResource('/modules', ModuleController::class);
-// Route::apiResource('/modules', ModuleController::class);
+Route::apiResource('/user', UserController::class);
 Route::get('/clients', [UserController::class, 'allClients']);
 //route
 Route::get('/users', [UserController::class, 'allUsers']);
@@ -46,8 +49,11 @@ Route::apiResource('/rapport', RapportController::class);
 Route::apiResource('/interventions', InterventionController::class);
 Route::apiResource('/notes', NoteController::class);
 Route::put('/cloture/{id}', [InterventionController::class, 'clotured']);
-Route::post('/forgot', [forgotPasswordController::class, 'forgot']);
-Route::post('/reset', [forgotPasswordController::class, 'reset']);
+Route::post('/forgot', [ForgotPasswordController::class, 'forgot']);
+Route::post('/reset', [ForgotPasswordController::class, 'reset']);
 Route::post('/insert', [UserController::class, 'insertData']);
+Route::put('/update/{user}', [UserController::class, 'updateData']);
+Route::apiResource('/moduleClient', ModuleClientController::class);
+
 Route::apiResource('/gamme', GammeController::class);
 

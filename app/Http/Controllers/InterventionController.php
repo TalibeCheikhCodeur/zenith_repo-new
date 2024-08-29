@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ModuleIntervention;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Mail\NotifMail;
@@ -16,12 +17,12 @@ use Illuminate\Support\Facades\Mail;
 use App\Http\Resources\InterventionResource;
 use App\Http\Requests\StoreInterventionRequest;
 use App\Http\Requests\UpdateInterventionRequest;
+use App\Http\Resources\InterventionFicheResource;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 use Illuminate\Support\Facades\Auth;
 
 class InterventionController extends Controller
-
 {
     use FormatResponse;
     /*
@@ -34,14 +35,14 @@ class InterventionController extends Controller
         return $this->response(Response::HTTP_OK, "Voici la listes des interventions", ['interventions' => $interventions]);
     }
 
-    public static function calculateDuration($startTime, $endTime)
+    public function calculateDuration($startTime, $endTime)
     {
         $start = Carbon::createFromFormat('H:i', $startTime);
         $end = Carbon::createFromFormat('H:i', $endTime);
 
         // Si l'heure de fin est avant l'heure de début, on assume que c'est le jour suivant
         if ($end->lessThan($start)) {
-            $end->addDay();
+            return $this->response(Response::HTTP_INTERNAL_SERVER_ERROR, "L'heure de fin doit etre supérieur à le de début", "");
         }
 
         $differenceInMinutes = $end->diffInMinutes($start);
@@ -56,8 +57,8 @@ class InterventionController extends Controller
     {
         // Validation des entrées (optionnel mais recommandé)
         $request->validate([
-            'module_ids'   => 'required|array',
-            'module_ids.*' => 'exists:modules,id', // Assurez-vous que le module existe dans la table modules
+            'module_ids' => 'required|array',
+            'module_ids.*' => 'exists:module_clients,id', // Assurez-vous que le module existe dans la table modules
         ]);
 
         $description = $request->input('description');
@@ -69,42 +70,36 @@ class InterventionController extends Controller
 
             $intervention = Intervention::find($request->idInt);
 
-            if ($intervention == null) 
-            {
+            if ($intervention == null) {
                 $intervention = new Intervention();
             }
 
             $intervention->description = $description;
 
-            if ($request->file('image') !== null)
-            {
+            if ($request->file('image') !== null) {
                 $file = $request->file('image');
                 $ext = $file->getClientOriginalExtension();
-                $imageName = time().'.'.$ext;
-                $file->move(public_path()."/uploads/images/",$imageName);
+                $imageName = time() . '.' . $ext;
+                $file->move(public_path() . "/uploads/images/", $imageName);
                 $intervention->image = $imageName;
                 $intervention->path_image = asset('uploads/images/' . $imageName);
-            } else
-            {
-                if (!$intervention->exists)
-                {
+            } else {
+                if (!$intervention->exists) {
                     $intervention->image = null;
                     $intervention->path_image = null;
                 }
             }
-            
-            $intervention->user_id = 1;
+
+            // $intervention->user_id = 1;
 
             $intervention->save();
 
-            if (!empty($moduleIds))
-            {
-                Module_intervention::where('intervention_id', $intervention->id)->delete();
-                
-                foreach ($moduleIds as $moduleId)
-                {
-                    Module_intervention::create([
-                        'module_id' => $moduleId,
+            if (!empty($moduleIds)) {
+                ModuleIntervention::where('intervention_id', $intervention->id)->delete();
+
+                foreach ($moduleIds as $moduleId) {
+                    ModuleIntervention::create([
+                        'module_client_id' => $moduleId,
                         'intervention_id' => $intervention->id,
                     ]);
                 }
@@ -117,12 +112,12 @@ class InterventionController extends Controller
 
             $recipients = [
                 'title' => 'Zenith_international',
-                'body' => 'un client a fait une nouvelles demande',
+                'body' => 'Un client a fait une nouvelle demande',
                 'user' => $users
             ];
-            dispatch(new SendEmailJob($recipients, $mails)); 
+            dispatch(new SendEmailJob($recipients, $mails));
             return $this->response(Response::HTTP_OK, "La demande a été envoyée avec succès", ["intervention" => new InterventionResource($intervention)]);
-           
+
         } catch (\Exception $e) {
             // Annulation de la transaction en cas d'erreur
             DB::rollBack();
@@ -133,8 +128,6 @@ class InterventionController extends Controller
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-      
-
     }
 
     /*
@@ -225,8 +218,27 @@ class InterventionController extends Controller
 
         return $this->response(
             Response::HTTP_OK,
-            "tous les fiches",
-            ["interventions" => InterventionResource::collection($fiches)]
+            "Voici la liste des fiches d'intervention",
+            ["interventions" => InterventionFicheResource::collection($fiches)]
+        );
+    }
+
+    public function showFiche($id)
+    {
+        $intervention = Intervention::find($id);
+
+        if (!$intervention) {
+            return $this->response(Response::HTTP_INTERNAL_SERVER_ERROR, "Cette intervention n'existe pas!", []);
+        }
+
+        $fiche = Intervention::whereNotNull(['user_id', 'debut_intervention'])
+            ->where("id", $id)
+            ->first();
+
+        return $this->response(
+            Response::HTTP_OK,
+            "Voici la fiche de cette intervention",
+            ["interventions" => new InterventionFicheResource($fiche)]
         );
     }
 
@@ -243,13 +255,10 @@ class InterventionController extends Controller
         );
     }
 
-
-
-
     public function destroy(Intervention $intervention)
     {
-       $intervention->delete();
-       $interventions = Intervention::all();
-       return $this->response(Response::HTTP_OK, "Intervention supprimé avec succès",["interventions"=>InterventionResource::collection($interventions)]);
+        $intervention->delete();
+        $interventions = Intervention::all();
+        return $this->response(Response::HTTP_OK, "Intervention supprimé avec succès", ["interventions" => InterventionResource::collection($interventions)]);
     }
 }
