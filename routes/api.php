@@ -9,7 +9,6 @@ use App\Http\Controllers\NoteController;
 use App\Http\Controllers\RapportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GammeController;
-
 use App\Models\ModuleClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -42,6 +41,7 @@ Route::get("/myFiche/{id}", [InterventionController::class, 'showFiche']);
 Route::apiResource('/modules', ModuleController::class);
 Route::apiResource('/user', UserController::class);
 Route::get('/clients', [UserController::class, 'allClients']);
+Route::get('/interventions/filter-by-date', [InterventionController::class, 'filterByDate']);
 //route
 Route::get('/users', [UserController::class, 'allUsers']);
 Route::post('/users', [UserController::class, "store"]);
@@ -54,6 +54,5 @@ Route::post('/reset', [ForgotPasswordController::class, 'reset']);
 Route::post('/insert', [UserController::class, 'insertData']);
 Route::put('/update/{user}', [UserController::class, 'updateData']);
 Route::apiResource('/moduleClient', ModuleClientController::class);
-
 Route::apiResource('/gamme', GammeController::class);
 

@@ -179,7 +179,11 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        return $this->response(
+            Response::HTTP_OK,
+            "User Showing successfully",
+            ["user" => new UserResource($user)]
+        );
     }
 
     /**
