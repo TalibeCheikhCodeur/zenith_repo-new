@@ -219,9 +219,10 @@ class InterventionController extends Controller
 
     public function allFiches()
     {
-        $fiches = Intervention::with(['modules', 'user'])
-            ->whereNotNull(['user_id', 'debut_intervention'])
+        // dd("ICI");
+        $fiches = Intervention::whereNotNull(['user_id', 'debut_intervention'])
             ->get();
+            // dd($fiches);
 
         return $this->response(
             Response::HTTP_OK,
@@ -284,6 +285,24 @@ class InterventionController extends Controller
         $interventions = Intervention::where("user_id",$userId)->whereBetween('created_at', [$startDate, $endDate])->get();
 
         return $this->response(Response::HTTP_OK, "Voici la listes des interventions", ["interventions" => InterventionResource::collection($interventions)]);
+    }
 
+
+    public function filterDateByFiche(Request $request){
+
+        $request->validate([
+            'start_date' =>'required|date',
+            'end_date'  => 'required|date|after_or_equal:start_date'
+        ]);
+
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        
+        $fiches = Intervention::with(['modules', 'user'])
+            ->whereNotNull(['user_id', 'debut_intervention'])
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get();
+
+        return $this->response(Response::HTTP_OK, "Voici la liste des fiches d'intervention", ["interventions" => InterventionFicheResource::collection($fiches)]);
     }
 }

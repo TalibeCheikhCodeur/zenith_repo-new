@@ -42,6 +42,7 @@ Route::apiResource('/modules', ModuleController::class);
 Route::apiResource('/user', UserController::class);
 Route::get('/clients', [UserController::class, 'allClients']);
 Route::get('/interventions/filter-by-date', [InterventionController::class, 'filterByDate']);
+Route::get('/fiches/filter-date', [InterventionController::class, 'filterDateByFiche']);
 //route
 Route::get('/users', [UserController::class, 'allUsers']);
 Route::post('/users', [UserController::class, "store"]);
