@@ -188,6 +188,7 @@ class InterventionController extends Controller
         $intervention->caractere_intervention = $caractereInter;
         $intervention->durée = $duree;
         $intervention->trableShooting = $trableShooting;
+        $intervention->isClotured = true;
 
         $intervention->save();
 
@@ -242,18 +243,18 @@ class InterventionController extends Controller
         );
     }
 
-    public function clotured($interventionId)
-    {
-        $intervention = Intervention::findOrFail($interventionId);
-        $intervention->isClotured = true;
-        $intervention->save();
+    // public function clotured($interventionId)
+    // {
+    //     $intervention = Intervention::findOrFail($interventionId);
+    //     $intervention->isClotured = true;
+    //     $intervention->save();
 
-        return $this->response(
-            Response::HTTP_OK,
-            "Cloturé avec succès",
-            ["intervention" => new InterventionResource($intervention)]
-        );
-    }
+    //     return $this->response(
+    //         Response::HTTP_OK,
+    //         "Cloturé avec succès",
+    //         ["intervention" => new InterventionResource($intervention)]
+    //     );
+    // }
 
     public function destroy(Intervention $intervention)
     {
