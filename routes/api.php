@@ -47,7 +47,7 @@ Route::post('/users', [UserController::class, "store"]);
 Route::apiResource('/rapport', RapportController::class);
 Route::apiResource('/interventions', InterventionController::class);
 Route::apiResource('/notes', NoteController::class);
-Route::put('/cloture/{id}', [InterventionController::class, 'clotured']);
+// Route::put('/cloture/{id}', [InterventionController::class, 'clotured']);
 Route::post('/forgot', [ForgotPasswordController::class, 'forgot']);
 Route::post('/reset', [ForgotPasswordController::class, 'reset']);
 Route::post('/insert', [UserController::class, 'insertData']);
