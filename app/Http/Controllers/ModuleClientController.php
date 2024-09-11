@@ -49,6 +49,8 @@ class ModuleClientController extends Controller
 
         // Mettre à jour l'état
         $moduleClient->etat = $request->etat;
+        $moduleClient->resilié = 1;
+
         $moduleClient->save();
 
         // Réponse JSON
