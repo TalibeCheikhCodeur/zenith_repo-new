@@ -24,7 +24,6 @@ class UserSeeder extends Seeder
             'created_at' => now()
         ]);
 
-
         User::firstOrCreate([
             'nom' => "Ndiaye",
             'prenom' => "ISEC",
@@ -34,7 +33,5 @@ class UserSeeder extends Seeder
             'role' => "client",
             'created_at' => now()
         ]);
-
-
     }
 }
