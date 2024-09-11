@@ -34,6 +34,9 @@ class ClientResource extends JsonResource
                     "code_activation" => $module->pivot->code_activation,
                     "nbre_users" => $module->pivot->nbre_users,
                     "nbre_salariés" => $module->pivot->nbre_salariés,
+                    "etat"=>$module->pivot->etat,
+                    "resilié"=>$module->pivot->resilié,
+
                 ];
             })
         ];
