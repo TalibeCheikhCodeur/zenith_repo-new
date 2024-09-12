@@ -22,8 +22,8 @@ class StoreGammeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'libelle' => 'required|string|',
-            'description' => 'required|string',
+                'libelle' => 'required|string|',
+                'description' => 'required|string',
         ];
     }
 }

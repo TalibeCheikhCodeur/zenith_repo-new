@@ -56,11 +56,13 @@ class InterventionController extends Controller
     public function askIntervention(Request $request)
     {
         // Validation des entrées (optionnel mais recommandé)
-        $request->validate([
-            'module_ids' => 'required|array',
-            'module_ids.*' => 'exists:module_clients,id', // Assurez-vous que le module existe dans la table modules
-        ]);
+        // $request->validate([
+        //     'module_ids' => 'required|array',
+        //     'module_ids.*' => 'exists:module_clients,id', // Assurez-vous que le module existe dans la table modules
+        // ]);
 
+
+        // dd($request->all());
         $description = $request->input('description');
 
         $moduleIds = $request->input('module_ids');
@@ -70,7 +72,8 @@ class InterventionController extends Controller
 
             $intervention = Intervention::find($request->idInt);
 
-            if ($intervention == null) {
+            if ($intervention == null)
+            {
                 $intervention = new Intervention();
             }
 
@@ -83,8 +86,10 @@ class InterventionController extends Controller
                 $file->move(public_path() . "/uploads/images/", $imageName);
                 $intervention->image = $imageName;
                 $intervention->path_image = asset('uploads/images/' . $imageName);
-            } else {
-                if (!$intervention->exists) {
+            } else
+            {
+                if (!$intervention->exists)
+                {
                     $intervention->image = null;
                     $intervention->path_image = null;
                 }
@@ -94,10 +99,12 @@ class InterventionController extends Controller
 
             $intervention->save();
 
-            if (!empty($moduleIds)) {
+            if (!empty($moduleIds))
+            {
                 ModuleIntervention::where('intervention_id', $intervention->id)->delete();
-
                 foreach ($moduleIds as $moduleId) {
+
+                    // dd($moduleId);
                     ModuleIntervention::create([
                         'module_client_id' => $moduleId,
                         'intervention_id' => $intervention->id,
@@ -213,9 +220,10 @@ class InterventionController extends Controller
 
     public function allFiches()
     {
-        $fiches = Intervention::with(['modules', 'user'])
-            ->whereNotNull(['user_id', 'debut_intervention'])
+        // dd("ICI");
+        $fiches = Intervention::whereNotNull(['user_id', 'debut_intervention'])
             ->get();
+            // dd($fiches);
 
         return $this->response(
             Response::HTTP_OK,
@@ -261,5 +269,41 @@ class InterventionController extends Controller
         $intervention->delete();
         $interventions = Intervention::all();
         return $this->response(Response::HTTP_OK, "Intervention supprimé avec succès", ["interventions" => InterventionResource::collection($interventions)]);
+    }
+
+
+    public function filterByDate(Request $request)
+    {
+        $request->validate([
+            'start_date' =>'required|date',
+            'end_date'  => 'required|date|after_or_equal:start_date'
+        ]);
+
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $userId = $request->input('user_id');
+
+        $interventions = Intervention::where("user_id",$userId)->whereBetween('created_at', [$startDate, $endDate])->get();
+
+        return $this->response(Response::HTTP_OK, "Voici la listes des interventions", ["interventions" => InterventionResource::collection($interventions)]);
+    }
+
+
+    public function filterDateByFiche(Request $request){
+
+        $request->validate([
+            'start_date' =>'required|date',
+            'end_date'  => 'required|date|after_or_equal:start_date'
+        ]);
+
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        
+        $fiches = Intervention::with(['modules', 'user'])
+            ->whereNotNull(['user_id', 'debut_intervention'])
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get();
+
+        return $this->response(Response::HTTP_OK, "Voici la liste des fiches d'intervention", ["interventions" => InterventionFicheResource::collection($fiches)]);
     }
 }

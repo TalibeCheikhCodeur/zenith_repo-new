@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreGammeRequest;
 use App\Http\Resources\GammeResource;
 use Illuminate\Http\Response;
-
 use App\Models\Gamme;
 use App\Traits\FormatResponse;
 use Illuminate\Http\Request;
+
+
+
 
 class GammeController extends Controller
 {
@@ -61,7 +63,6 @@ class GammeController extends Controller
             'description' => $request->description,
         ]);
         return $this->response(Response::HTTP_OK, "La gamme a été mise à jour avec succès", ["gamme" => new GammeResource($gamme)]);
-        return $this->response(Response::HTTP_OK, "La gamme a été mise à jour avec succès", ["gamme" => new GammeResource($gamme)]);
     }
 
     /**
@@ -69,14 +70,12 @@ class GammeController extends Controller
      */
     public function destroy(Gamme $gamme)
     {
-        if (!$gamme) {
-            return $this->response(Response::HTTP_NOT_FOUND, GammeController::NOT_EXIST_GAMME, ['gamme' => []]);
+        if (!$gamme)
+        {
+            return $this->response(Response::HTTP_NOT_FOUND, "La gamme n'existe pas", ['gamme' => []]);
         }
-
         $gamme->delete();
-
         $gammes = Gamme::all();
-
-        return $this->response(Response::HTTP_OK, "La gamme a été supprimée avec succès", ["gamme" => GammeResource::collection($gammes)]);
+        return $this->response(Response::HTTP_OK, "La gamme a été supprimée avec succès", ["gammes"=>GammeResource::collection($gammes)]);
     }
 }

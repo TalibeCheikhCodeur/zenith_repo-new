@@ -19,7 +19,18 @@ class UserSeeder extends Seeder
             'prenom' => "Cheikh",
             'email' => "kha@gmail.com",
             'password' => Hash::make('12345678'),
+            'telephone' => '762943535',
             'role' => "DG",
+            'created_at' => now()
+        ]);
+
+        User::firstOrCreate([
+            'nom' => "Ndiaye",
+            'prenom' => "ISEC",
+            'email' => "isec@gmail.com",
+            'password' => Hash::make('12345678'),
+            'telephone' => '762443535',
+            'role' => "client",
             'created_at' => now()
         ]);
     }

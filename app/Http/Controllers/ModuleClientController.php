@@ -42,10 +42,24 @@ class ModuleClientController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ModuleClient $moduleClient)
+    public function update(Request $request, $id)
     {
-        //
+        // Trouver le moduleClient par ID
+        $moduleClient = ModuleClient::findOrFail($id);
+
+        // Mettre à jour l'état
+        $moduleClient->etat = $request->etat;
+        $moduleClient->resilié = 1;
+
+        $moduleClient->save();
+
+        // Réponse JSON
+        return response()->json([
+            'message' => 'État mis à jour avec succès.',
+            'modulesClient' => [$moduleClient]
+        ], Response::HTTP_OK);
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -53,5 +67,14 @@ class ModuleClientController extends Controller
     public function destroy(ModuleClient $moduleClient)
     {
         //
+    }
+
+    public function updateEtat(Request $request, $id)
+    {
+        $moduleClient = ModuleClient::findOrFail($id);
+        $moduleClient->etat = $request->etat;
+        $moduleClient->save();
+
+        return $this->response(Response::HTTP_OK, "État mis à jour avec succès.", ["modulesClient" => [$moduleClient]]);
     }
 }
