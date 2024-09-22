@@ -9,7 +9,6 @@ use App\Http\Controllers\NoteController;
 use App\Http\Controllers\RapportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GammeController;
-use App\Models\ModuleClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

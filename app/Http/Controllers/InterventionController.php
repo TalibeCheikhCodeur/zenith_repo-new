@@ -299,10 +299,9 @@ class InterventionController extends Controller
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
         
-        $fiches = Intervention::with(['modules', 'user'])
-            ->whereNotNull(['user_id', 'debut_intervention'])
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->get();
+        $fiches = Intervention::whereNotNull(['user_id', 'debut_intervention'])
+                              ->whereBetween('created_at', [$startDate, $endDate])
+                              ->get();
 
         return $this->response(Response::HTTP_OK, "Voici la liste des fiches d'intervention", ["interventions" => InterventionFicheResource::collection($fiches)]);
     }
