@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::post("/login", [AuthController::class, "login"]);
+// Route::post("/login", [AuthController::class, "login"]);
 Route::middleware('auth:sanctum')->get('/logout', [AuthController::class, 'logout']);
 Route::get('asks', [InterventionController::class, 'allAskInterventions']);
 Route::post('/askIntervention', [InterventionController::class, 'askIntervention']);
@@ -37,11 +37,11 @@ Route::get('/fiches', [InterventionController::class, 'allFiches']);
 Route::get("/myFiche/{id}", [InterventionController::class, 'showFiche']);
 Route::apiResource('/modules', ModuleController::class);
 Route::apiResource('/user', UserController::class);
-Route::get('/clients', [UserController::class, 'allClients']);
+// Route::get('/clients', [UserController::class, 'allClients']);
 Route::get('/interventions/filter-by-date', [InterventionController::class, 'filterByDate']);
 Route::get('/fiches/filter-date', [InterventionController::class, 'filterDateByFiche']);
 //route
-Route::get('/users', [UserController::class, 'allUsers']);
+// Route::get('/users', [UserController::class, 'allUsers']);
 Route::post('/users', [UserController::class, "store"]);
 Route::apiResource('/rapport', RapportController::class);
 Route::apiResource('/interventions', InterventionController::class);
