@@ -15,16 +15,20 @@ class CorsMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request);
+        // On laisse passer la requête au prochain middleware
+        $response = $next($request);
+
+        // Ajouter les en-têtes CORS à la réponse
         $response->headers->set('Access-Control-Allow-Origin', '*');
         $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-        // $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, X-Requested-With');
         $response->headers->set('Access-Control-Allow-Headers', '*');
 
+        // Si la méthode est OPTIONS, renvoyer une réponse vide avec les en-têtes CORS
         if ($request->getMethod() === "OPTIONS") {
             return response()->json('{"method":"OPTIONS"}', 200, $response->headers->all());
         }
 
         return $response;
+    
     }
 }
