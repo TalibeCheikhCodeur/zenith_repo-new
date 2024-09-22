@@ -24,6 +24,13 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+
+     public function index(Request $request)
+     {
+         return User::all();
+     }
+ 
     public function allClients()
     {
         $clients = ClientResource::collection(User::where('role', 'client')->get());
