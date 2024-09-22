@@ -21,7 +21,7 @@ class CorsMiddleware
         // Ajouter les en-têtes CORS à la réponse
         $response->headers->set('Access-Control-Allow-Origin', '*');
         $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-        $response->headers->set('Access-Control-Allow-Headers', '*');
+        $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, X-Requested-With');
 
         // Si la méthode est OPTIONS, renvoyer une réponse vide avec les en-têtes CORS
         if ($request->getMethod() === "OPTIONS") {
