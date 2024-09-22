@@ -36,21 +36,21 @@ Route::put('/fiche/{interventionId}', [InterventionController::class, 'ficheInte
 Route::get('/fiches', [InterventionController::class, 'allFiches']);
 Route::get("/myFiche/{id}", [InterventionController::class, 'showFiche']);
 Route::apiResource('/modules', ModuleController::class);
-// Route::apiResource('/user', UserController::class);
+Route::apiResource('/user', UserController::class);
 Route::get('/clients', [UserController::class, 'allClients']);
 Route::get('/interventions/filter-by-date', [InterventionController::class, 'filterByDate']);
 Route::get('/fiches/filter-date', [InterventionController::class, 'filterDateByFiche']);
 //route
 Route::get('/users', [UserController::class, 'allUsers']);
 Route::post('/users', [UserController::class, "store"]);
-// Route::apiResource('/rapport', RapportController::class);
-// Route::apiResource('/interventions', InterventionController::class);
-// Route::apiResource('/notes', NoteController::class);
+Route::apiResource('/rapport', RapportController::class);
+Route::apiResource('/interventions', InterventionController::class);
+Route::apiResource('/notes', NoteController::class);
 // Route::put('/cloture/{id}', [InterventionController::class, 'clotured']);
 Route::post('/forgot', [ForgotPasswordController::class, 'forgot']);
 Route::post('/reset', [ForgotPasswordController::class, 'reset']);
 Route::post('/insert', [UserController::class, 'insertData']);
 Route::put('/update/{user}', [UserController::class, 'updateData']);
-// Route::apiResource('/moduleClient', ModuleClientController::class);
-// Route::apiResource('/gamme', GammeController::class);
+Route::apiResource('/moduleClient', ModuleClientController::class);
+Route::apiResource('/gamme', GammeController::class);
 
