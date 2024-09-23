@@ -35,7 +35,7 @@ class ForgotPasswordController extends Controller
         // send mail
         $recipients = [
             'title' => 'Demande de Changement de mot de passe',
-            'body' => 'Pour réinitialiser votre mot de passe veuillez suivre ce lien : http://localhost:4200/auth/resetPassword?token=' . $token,
+            'body' => 'Pour réinitialiser votre mot de passe veuillez suivre ce lien : http://192.168.1.19:4200/auth/resetPassword?token=' . $token,
         ];
         dispatch(new SendEmailJob($recipients, [$email]));
         return $this->response(Response::HTTP_OK, "Vérifier votre courrier", ['token' => $token]);
