@@ -31,9 +31,9 @@ return [
 
     // 'supports_credentials' => false,
 
-   'paths' => ['api/*'],
+    'paths' => ['api/*'],
     'allowed_methods' => ['*'],
-    'allowed_origins' => ['http://localhost:4200'], // ou remplacez par votre origine spécifique
+    'allowed_origins' => ['*'], // ou remplacez par votre origine spécifique
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['*'],
     'exposed_headers' => [],
