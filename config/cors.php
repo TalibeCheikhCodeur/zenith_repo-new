@@ -31,12 +31,13 @@ return [
 
     // 'supports_credentials' => false,
 
-    'allowedHeaders'         => ['*'],
-    'allowedMethods'         => ['*'],
-    'allowedOrigins'         => ['*'],
-    'exposedHeaders'         => ['Authorization'],
-    'maxAge'                 => 0,
-    'supportsCredentials'    => false,
-    'paths' => ['*'],
+   'paths' => ['api/*'],
+    'allowed_methods' => ['*'],
+    'allowed_origins' => ['http://localhost:4200'], // ou remplacez par votre origine spécifique
+    'allowed_origins_patterns' => [],
+    'allowed_headers' => ['*'],
+    'exposed_headers' => [],
+    'max_age' => 0,
+    'supports_credentials' => true,
 
 ];
