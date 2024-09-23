@@ -40,7 +40,6 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
         'api' => [   
-        \App\Http\Middleware\ForceHttps::class,
         \Illuminate\Http\Middleware\HandleCors::class, // Ajoutez cette ligne
         // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class, // Si vous avez besoin de Sanctum
         \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
