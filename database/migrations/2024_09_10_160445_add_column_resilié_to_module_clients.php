@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('module_clients', function (Blueprint $table) {
-            $table->boolean('resilié')->default(0);
+            $table->boolean('resilie')->default(0);
 
         });
     }

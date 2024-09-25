@@ -46,7 +46,7 @@ class User extends Authenticatable
 
     public function modules()
     {
-        return $this->belongsToMany(Module::class, 'module_clients')->withPivot(['id', 'numero_serie', 'version', 'code_annuel', 'code_activation', 'nbre_users', 'nbre_salariés','etat','resilié']);
+        return $this->belongsToMany(Module::class, 'module_clients')->withPivot(['id', 'numero_serie', 'version', 'code_annuel', 'code_activation', 'nbre_users', 'nbre_salariés','etat','resilie']);
     }
     public function moduleClient(): HasMany
     {
