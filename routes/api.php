@@ -9,7 +9,6 @@ use App\Http\Controllers\NoteController;
 use App\Http\Controllers\RapportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GammeController;
-
 use App\Models\ModuleClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -29,8 +28,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
-
 Route::post("/login", [AuthController::class, "login"]);
 Route::middleware('auth:sanctum')->get('/logout', [AuthController::class, 'logout']);
 Route::get('asks', [InterventionController::class, 'allAskInterventions']);
@@ -42,18 +39,19 @@ Route::get("/myFiche/{id}", [InterventionController::class, 'showFiche']);
 Route::apiResource('/modules', ModuleController::class);
 Route::apiResource('/user', UserController::class);
 Route::get('/clients', [UserController::class, 'allClients']);
+Route::get('/interventions/filter-by-date', [InterventionController::class, 'filterByDate']);
+Route::get('/fiches/filter-date', [InterventionController::class, 'filterDateByFiche']);
 //route
 Route::get('/users', [UserController::class, 'allUsers']);
 Route::post('/users', [UserController::class, "store"]);
 Route::apiResource('/rapport', RapportController::class);
 Route::apiResource('/interventions', InterventionController::class);
 Route::apiResource('/notes', NoteController::class);
-Route::put('/cloture/{id}', [InterventionController::class, 'clotured']);
+// Route::put('/cloture/{id}', [InterventionController::class, 'clotured']);
 Route::post('/forgot', [ForgotPasswordController::class, 'forgot']);
 Route::post('/reset', [ForgotPasswordController::class, 'reset']);
 Route::post('/insert', [UserController::class, 'insertData']);
 Route::put('/update/{user}', [UserController::class, 'updateData']);
 Route::apiResource('/moduleClient', ModuleClientController::class);
-
 Route::apiResource('/gamme', GammeController::class);
 

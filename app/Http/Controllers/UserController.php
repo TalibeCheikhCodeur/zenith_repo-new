@@ -54,6 +54,7 @@ class UserController extends Controller
             "nom" => $allRequest['nom'] ?? null,
             "nom_client" => $allRequest['nom_client'] ?? null,
             "code_client" => $allRequest['code_client'] ?? null,
+            "adresse" => $allRequest['adresse'] ?? null,
             "prenom" => $allRequest['prenom'] ?? null,
             "role" => $allRequest['role'],
             "email" => $allRequest['email'],
@@ -101,6 +102,7 @@ class UserController extends Controller
                 "nom" => $req['nom'] ?? null,
                 "nom_client" => $req['nom_client'] ?? null,
                 "code_client" => $req['code_client'] ?? null,
+                "adresse" => $allRequest['adresse'] ?? null,
                 "prenom" => $req['prenom'] ?? null,
                 "role" => $req['role'],
                 "email" => $req['email'],
@@ -145,7 +147,7 @@ class UserController extends Controller
     {
 
         $user = User::findOrFail($id);
-        $user->update($request->only(['nom', 'prenom', 'nom_client', 'code_client', 'role', 'email', 'telephone']));
+        $user->update($request->only(['nom', 'prenom', 'nom_client', 'code_client', 'adresse', 'role', 'email', 'telephone']));
 
         if ($request->filled('password')) {
             $user->update(['password' => bcrypt($request->password)]);
@@ -201,7 +203,11 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        return $this->response(
+            Response::HTTP_OK,
+            "User Showing successfully",
+            ["user" => new UserResource($user)]
+        );
     }
 
     /**

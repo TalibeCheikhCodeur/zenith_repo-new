@@ -52,4 +52,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(ModuleClient::class);
     }
+
+    public function  interventions(): HasMany
+    {
+        return $this->hasMany(Intervention::class);
+    }
 }

@@ -23,6 +23,7 @@ class ClientResource extends JsonResource
             'code_client' => $this->code_client,
             'telephone' => $this->telephone,
             'email' => $this->email,
+            'adresse' => $this->adresse,
             'modules_client' => $this->modules->map(function ($module) {
                 return [
                     "id" => $module->pivot->id,
