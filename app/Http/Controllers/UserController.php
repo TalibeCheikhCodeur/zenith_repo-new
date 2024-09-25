@@ -143,56 +143,57 @@ class UserController extends Controller
     }
 
 
+  
+
     public function updateData(Request $request, $id)
-    {
+{
+    $user = User::findOrFail($id);
 
-        $user = User::findOrFail($id);
-        $user->update($request->only(['nom', 'prenom', 'nom_client', 'code_client', 'adresse', 'role', 'email', 'telephone']));
+    $user->update($request->only(['nom', 'prenom', 'nom_client','adresse', 'code_client', 'role', 'email', 'telephone']));
 
-        if ($request->filled('password')) {
-            $user->update(['password' => bcrypt($request->password)]);
-        }
+    if ($request->filled('password')) {
+        $user->update(['password' => bcrypt($request->password)]);
+    }
 
-        if ($request->has('modulesClient')) {
-            foreach ($request->modulesClient as $module) {
-                $moduleModel = $user->modules()->where('module_id', $module['module_id'])
-                    ->where('code_annuel', $module['code_annuel'])
+    if ($request->has('modulesClient')) {
+        foreach ($request->modulesClient as $module) {
+            $existingModule = $user->modules()
+                ->where('module_id', $module['module_id'])
+                ->where('code_annuel', $module['code_annuel'])
+                ->first();
+
+            if ($existingModule) {
+                $user->modules()->updateExistingPivot($module['module_id'], [
+                    'numero_serie' => $module['numero_serie'],
+                    'version' => $module['version'],
+                    'code_activation' => $module['code_activation'],
+                    'nbre_users' => $module['nbre_users'],
+                    'nbre_salariés' => $module['nbre_salariés'],
+                ]);
+            } else {
+                $oldModule = $user->modules()
+                    ->where('module_id', $module['module_id'])
                     ->first();
 
-                if ($moduleModel) {
-                    $user->modules()->updateExistingPivot($module['module_id'], [
-                        'numero_serie' => $module['numero_serie'],
-                        'version' => $module['version'],
-                        'code_activation' => $module['code_activation'],
-                        'nbre_users' => $module['nbre_users'],
-                        'nbre_salariés' => $module['nbre_salariés'],
-                        'etat' => 1
-                    ]);
-                } else {
-                    $existingModule = $user->modules()->where('module_id', $module['module_id'])->first();
-
-                    if ($existingModule) {
-                        if ($existingModule->pivot->code_annuel != $module['code_annuel']) {
-
-                            $existingModule->pivot->update(['etat' => 0]);
-                        }
-                    }
-
-                    $user->modules()->attach($module['module_id'], [
-                        'numero_serie' => $module['numero_serie'],
-                        'version' => $module['version'],
-                        'code_annuel' => $module['code_annuel'],
-                        'code_activation' => $module['code_activation'],
-                        'nbre_users' => $module['nbre_users'],
-                        'nbre_salariés' => $module['nbre_salariés'],
-                        'etat' => 1
-                    ]);
+                if ($oldModule && $oldModule->pivot->code_annuel != $module['code_annuel']) {
+                    $user->modules()->updateExistingPivot($oldModule->id, ['etat' => 0]);
                 }
+
+                $user->modules()->attach($module['module_id'], [
+                    'numero_serie' => $module['numero_serie'],
+                    'version' => $module['version'],
+                    'code_annuel' => $module['code_annuel'],
+                    'code_activation' => $module['code_activation'],
+                    'nbre_users' => $module['nbre_users'],
+                    'nbre_salariés' => $module['nbre_salariés'],
+                    'etat' => 1 
+                ]);
             }
         }
-
-        return $this->response(Response::HTTP_OK, "Utilisateur mis à jour avec succès.", ["utilisateur" => $user]);
     }
+
+    return $this->response(Response::HTTP_OK, "Utilisateur mis à jour avec succès.", ["utilisateur" => $user]);
+}
 
 
 
