@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::table('module_clients', function (Blueprint $table) {
             $table->boolean('resilie')->default(0);
-
         });
     }
 
