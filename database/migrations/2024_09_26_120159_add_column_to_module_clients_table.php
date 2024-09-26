@@ -11,20 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('module_clients', function (Blueprint $table) {
-            $table->string("mode_aquisition")->nullable();
-            $table->dateTime("date_fin_validite")->nullable();
-            $table->string("code_octroye")->nullable();
-        });
-    }
+    //     Schema::table('module_clients', function (Blueprint $table) {
+    //         $table->string("mode_aquisition")->nullable();
+    //         $table->dateTime("date_fin_validite")->nullable();
+    //         $table->string("code_octroye")->nullable();
+    //     });
+    // }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::table('module_clients', function (Blueprint $table) {
-            //
-        });
-    }
+    // /**
+    //  * Reverse the migrations.
+    //  */
+    // public function down(): void
+    // {
+    //     Schema::table('module_clients', function (Blueprint $table) {
+    //         //
+    //     });
+    // }
+}
+
 };
