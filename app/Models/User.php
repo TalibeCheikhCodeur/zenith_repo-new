@@ -14,7 +14,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable ;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -46,14 +46,14 @@ class User extends Authenticatable
 
     public function modules()
     {
-        return $this->belongsToMany(Module::class, 'module_clients')->withPivot(['id', 'numero_serie', 'version', 'code_annuel', 'code_activation', 'nbre_users', 'nbre_salariés','etat','resilie','date_validite']);
+        return $this->belongsToMany(Module::class, 'module_clients')->withPivot(['id', 'numero_serie', 'version', 'code_annuel', 'code_activation', 'nbre_users', 'nbre_salariés', 'etat', 'resilie', 'date_fin_validite']);
     }
     public function moduleClient(): HasMany
     {
         return $this->hasMany(ModuleClient::class);
     }
 
-    public function  interventions(): HasMany
+    public function interventions(): HasMany
     {
         return $this->hasMany(Intervention::class);
     }

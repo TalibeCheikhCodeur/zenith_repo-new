@@ -27,16 +27,16 @@ class ClientResource extends JsonResource
             'modules_client' => $this->modules->map(function ($module) {
                 return [
                     "id" => $module->pivot->id,
-                    "module"=> new ModuleResource($module),
+                    "module" => new ModuleResource($module),
                     "numero_serie" => $module->pivot->numero_serie,
                     "version" => $module->pivot->version,
                     "code_annuel" => $module->pivot->code_annuel,
                     "code_activation" => $module->pivot->code_activation,
                     "nbre_users" => $module->pivot->nbre_users,
                     "nbre_salariés" => $module->pivot->nbre_salariés,
-                    "date_validite" => $module->pivot->date_validite,
-                    "etat"=>$module->pivot->etat,
-                    "resilie"=>$module->pivot->resilie,
+                    "etat" => $module->pivot->etat,
+                    "resilie" => $module->pivot->resilie,
+                    "date_validite" => $module->pivot->date_fin_validite,
 
                 ];
             })
