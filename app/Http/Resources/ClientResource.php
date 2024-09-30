@@ -34,6 +34,7 @@ class ClientResource extends JsonResource
                     "code_activation" => $module->pivot->code_activation,
                     "nbre_users" => $module->pivot->nbre_users,
                     "nbre_salariés" => $module->pivot->nbre_salariés,
+                    "date_validite" => $module->pivot->date_validite,
                     "etat"=>$module->pivot->etat,
                     "resilie"=>$module->pivot->resilie,
 
