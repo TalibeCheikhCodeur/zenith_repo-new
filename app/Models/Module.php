@@ -15,7 +15,7 @@ class Module extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'module_clients')->withPivot(['numero_serie', 'version', 'code_annuel', 'code_activation', 'nbre_users', 'nbre_salariés']);
+        return $this->belongsToMany(User::class, 'module_clients')->withPivot(['numero_serie', 'version', 'code_annuel', 'code_activation', 'nbre_users', 'nbre_salariés','date_validite']);
     }
     public function module_interventions(): HasMany
     {
