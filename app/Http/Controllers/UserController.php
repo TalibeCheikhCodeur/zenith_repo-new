@@ -139,7 +139,7 @@ class UserController extends Controller
                     'nbre_users' => $module['nbre_users'],
                     'nbre_salariés' => $module['nbre_salariés'],
                     'etat' => $module['etat'],
-                    'date_fin_validite' => $module['date_valid']
+                    'date_fin_validite' => $module['date_fin_validite']
                 ];
             }
 
@@ -176,7 +176,7 @@ class UserController extends Controller
                         'code_activation' => $module['code_activation'],
                         'nbre_users' => $module['nbre_users'],
                         'nbre_salariés' => $module['nbre_salariés'],
-                        'date_fin_validite' => $module['date_valid']
+                        'date_fin_validite' => $module['date_fin_validite']
 
                     ]);
                 } else {
@@ -195,7 +195,7 @@ class UserController extends Controller
                         'code_activation' => $module['code_activation'],
                         'nbre_users' => $module['nbre_users'],
                         'nbre_salariés' => $module['nbre_salariés'],
-                        'date_fin_validite' => $module['date_valid'],
+                        'date_fin_validite' => $module['date_fin_validite'],
                         'etat' => 1
                     ]);
                 }
