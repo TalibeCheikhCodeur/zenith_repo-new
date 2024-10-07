@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FicheDescController;
 use App\Http\Controllers\forgotPasswordController;
 use App\Http\Controllers\InterventionController;
 use App\Http\Controllers\ModuleClientController;
@@ -44,6 +45,8 @@ Route::get('/fiches/filter-date', [InterventionController::class, 'filterDateByF
 Route::get('/users', [UserController::class, 'allUsers']);
 Route::post('/users', [UserController::class, "store"]);
 Route::apiResource('/rapport', RapportController::class);
+Route::apiResource('/ficheDesk', FicheDescController::class);
+Route::post('/insertDesc/{id}', [FicheDescController::class, "insert"]);
 Route::apiResource('/interventions', InterventionController::class);
 Route::apiResource('/notes', NoteController::class);
 // Route::put('/cloture/{id}', [InterventionController::class, 'clotured']);
