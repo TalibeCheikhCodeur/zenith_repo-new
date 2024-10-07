@@ -5,13 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Resources\FicheDescResource;
 use App\Models\FicheDesc;
 use App\Models\Intervention;
-use App\Traits\FormatResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class FicheDescController extends Controller
 {
-    use FormatResponse;
     /**
      * Display a listing of the resource.
      */
@@ -31,9 +29,9 @@ class FicheDescController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(FicheDesc $ficheDesc)
     {
-        //
+        return $this->response(Response::HTTP_OK, "Description bien récupérée !", ["Desc" => new FicheDescResource($ficheDesc)]);
     }
 
     /**
@@ -52,19 +50,24 @@ class FicheDescController extends Controller
         //
     }
 
-    public function insert(Request $request, FicheDesc $ficheDesc)
+    public function insert(Request $request, $id)
     {
-        if ($ficheDesc) {
-            $description = $ficheDesc->description;
-            if ($description != null) {
-                $ficheDesc->update($request->all());
-                return $this->response(Response::HTTP_OK, "liste de tous les modules", []);
+        $intervention = Intervention::find($id);
+        if ($intervention) {
+            $ficheDesc = FicheDesc::where("intervention_id", $id)->firstOrFail();
+            if ($ficheDesc) {
+                FicheDesc::update([
+                    "description" => $request->description
+                ]);
+                return $this->response(Response::HTTP_OK, "Description mis à jour", []);
             } else {
                 FicheDesc::create([
                     "description" => $request->description
                 ]);
-                return $this->response(Response::HTTP_OK, "liste de tous les modules", []);
+                return $this->response(Response::HTTP_OK, "Description mis ajoutée", []);
             }
+        } else {
+            return $this->response(Response::HTTP_INTERNAL_SERVER_ERROR, "Intervention non trouvée !", []);
         }
     }
 }
