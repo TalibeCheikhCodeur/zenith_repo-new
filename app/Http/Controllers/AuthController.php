@@ -20,7 +20,7 @@ class AuthController extends Controller
         $user = Auth::user();
         $token = $user->createToken("token")->plainTextToken;
 
-        $expiresAt = Carbon::now()->addMinutes(1);  // Token expires in 24 hours
+        $expiresAt = Carbon::now()->addHours(24);  // Le Token va expirer sous 24 h
 
         $user->tokens()->create([
             'name' => 'auth_token',
