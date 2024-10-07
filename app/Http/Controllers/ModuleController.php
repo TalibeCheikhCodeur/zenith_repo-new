@@ -19,7 +19,7 @@ class ModuleController extends Controller
     {
         $modules = Module::with('gamme')->get();
         // dd($modules);
-        return $this->response(response::HTTP_OK,"liste de tous les modules",["modules"=>ModuleResource::collection($modules)]);
+        return $this->response(response::HTTP_OK, "liste de tous les modules", ["modules" => ModuleResource::collection($modules)]);
     }
 
     /**
@@ -35,7 +35,6 @@ class ModuleController extends Controller
      */
     public function store(StoreModuleRequest $request)
     {
-    
         $module = Module::create($request->all());
         return $this->response(Response::HTTP_OK, "Module ajouté avec succès", ["module" => new ModuleResource($module)]);
     }

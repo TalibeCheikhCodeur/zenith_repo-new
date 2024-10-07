@@ -10,10 +10,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('module_clients', function (Blueprint $table) {
-            $table->string("mode_aquisition")->nullable();
-            $table->dateTime("date_fin_validite")->nullable();
-            $table->string("code_octroye")->nullable();
+        Schema::table('users', function (Blueprint $table) {
+            //
+            $table->string("username")->nullable()->unique();
         });
     }
 
@@ -22,7 +21,7 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('module_clients', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             //
         });
     }
