@@ -33,11 +33,10 @@ class ClientResource extends JsonResource
                     "code_annuel" => $module->pivot->code_annuel,
                     "code_activation" => $module->pivot->code_activation,
                     "nbre_users" => $module->pivot->nbre_users,
-                    "nbre_salariés" => $module->pivot->nbre_salariés,
+                    "nbre_salaries" => $module->pivot->nbre_salariés,
                     "etat" => $module->pivot->etat,
                     "resilie" => $module->pivot->resilie,
                     "date_validite" => $module->pivot->date_fin_validite,
-
                 ];
             })
         ];

@@ -72,8 +72,7 @@ class InterventionController extends Controller
 
             $intervention = Intervention::find($request->idInt);
 
-            if ($intervention == null)
-            {
+            if ($intervention == null) {
                 $intervention = new Intervention();
             }
 
@@ -86,10 +85,8 @@ class InterventionController extends Controller
                 $file->move(public_path() . "/uploads/images/", $imageName);
                 $intervention->image = $imageName;
                 $intervention->path_image = asset('uploads/images/' . $imageName);
-            } else
-            {
-                if (!$intervention->exists)
-                {
+            } else {
+                if (!$intervention->exists) {
                     $intervention->image = null;
                     $intervention->path_image = null;
                 }
@@ -99,8 +96,7 @@ class InterventionController extends Controller
 
             $intervention->save();
 
-            if (!empty($moduleIds))
-            {
+            if (!empty($moduleIds)) {
                 ModuleIntervention::where('intervention_id', $intervention->id)->delete();
                 foreach ($moduleIds as $moduleId) {
 
@@ -161,7 +157,7 @@ class InterventionController extends Controller
     {
         $recipients = [
             'title' => 'Zenith_international',
-            'body' => 'Une intervention vous a été assignée',
+            'body' => 'Une intervention vous a été assignée. Veuillez suivre ce lien pour voir les détails:' . 'http://192.168.1.19:4200',
         ];
         dispatch(new SendEmailJob($recipients, $mail));
     }
@@ -223,7 +219,7 @@ class InterventionController extends Controller
         // dd("ICI");
         $fiches = Intervention::whereNotNull(['user_id', 'debut_intervention'])
             ->get();
-            // dd($fiches);
+        // dd($fiches);
 
         return $this->response(
             Response::HTTP_OK,
@@ -275,33 +271,34 @@ class InterventionController extends Controller
     public function filterByDate(Request $request)
     {
         $request->validate([
-            'start_date' =>'required|date',
-            'end_date'  => 'required|date|after_or_equal:start_date'
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date'
         ]);
 
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
         $userId = $request->input('user_id');
 
-        $interventions = Intervention::where("user_id",$userId)->whereBetween('created_at', [$startDate, $endDate])->get();
+        $interventions = Intervention::where("user_id", $userId)->whereBetween('created_at', [$startDate, $endDate])->get();
 
         return $this->response(Response::HTTP_OK, "Voici la listes des interventions", ["interventions" => InterventionResource::collection($interventions)]);
     }
 
 
-    public function filterDateByFiche(Request $request){
+    public function filterDateByFiche(Request $request)
+    {
 
         $request->validate([
-            'start_date' =>'required|date',
-            'end_date'  => 'required|date|after_or_equal:start_date'
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date'
         ]);
 
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        
+
         $fiches = Intervention::whereNotNull(['user_id', 'debut_intervention'])
-                              ->whereBetween('created_at', [$startDate, $endDate])
-                              ->get();
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get();
 
         return $this->response(Response::HTTP_OK, "Voici la liste des fiches d'intervention", ["interventions" => InterventionFicheResource::collection($fiches)]);
     }

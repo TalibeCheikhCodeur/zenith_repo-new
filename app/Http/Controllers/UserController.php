@@ -125,7 +125,7 @@ class UserController extends Controller
 
             $details = [
                 "title" => "Informations de connexion",
-                "body" => UserController::MESSAGE_PASSWORD . 12345678 . ". Vous pouvez le changer en vous connectant via ce lien: http://localhost:4200/"
+                "body" => UserController::MESSAGE_PASSWORD . 12345678 . ". Vous pouvez le changer en vous connectant via ce lien: http://192.168.1.19:4200"
             ];
             SendEmailJob::dispatch($details, [$req['email']]);
 
