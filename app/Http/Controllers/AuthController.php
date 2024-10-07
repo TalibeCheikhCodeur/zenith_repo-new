@@ -31,8 +31,8 @@ class AuthController extends Controller
             'abilities' => ['*'],
             'expires_at' => $expiresAt,  // Save the expiration time
         ]);
-    
-        $cookie = cookie('token', $token, 24 * 60);  
+
+        $cookie = cookie('token', $token, 24 * 60);
 
         return response([
             'id' => $user->id,
@@ -44,9 +44,9 @@ class AuthController extends Controller
             'nom_client' => $user->nom_client,
             'code_client' => $user->code_client,
             'token' => $token,
-            'expires_at' => $expiresAt->toISOString()  
+            'expires_at' => $expiresAt->toISOString()
         ])->withCookie($cookie);
-    
+
     }
 
     public function logout()
