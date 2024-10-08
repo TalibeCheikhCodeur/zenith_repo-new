@@ -148,9 +148,15 @@ class InterventionController extends Controller
         {
           return $this->response(Response::HTTP_OK, "L\'utilisateur n'existe pas", []);
         }
+<<<<<<< HEAD
         
         $this->sendMail([$user->email], "une intervention vous a été assigné voici le lien pour vous connectez: http://192.168.1.19:4200");
         $this->sendMail($mails,"une intervention a été assigné à $user->prenom");
+=======
+
+        $this->sendMail([$user->email], "une intervention vous a été assigné");
+        $this->sendMail($mails, "une intervention a été assigné à $user->prenom");
+>>>>>>> 443920b065d55c1eeae247f23df63d5c5f24f767
 
         $intervention->user_id = $userId;
         $intervention->isAssigned = true;
