@@ -59,7 +59,7 @@ class FicheDescController extends Controller
         if ($intervention) {
             $ficheDesc = FicheDesc::where("intervention_id", $id)->first();
             if ($ficheDesc) {
-                FicheDesc::update([
+                $ficheDesc->update([
                     "description" => $request->trableShooting
                 ]);
                 return $this->response(Response::HTTP_OK, "Description mis à jour", []);
