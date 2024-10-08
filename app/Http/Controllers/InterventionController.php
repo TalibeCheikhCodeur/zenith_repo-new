@@ -144,9 +144,11 @@ class InterventionController extends Controller
         $user = User::where('id', $userId)->first();
         $mails = User::whereIn('role', ['DPT', 'DG'])->pluck('email'); 
         // return $mails;
-        if (!$user) {
-            return $this->response(Response::HTTP_OK, "L\'utilisateur n'existe pas", []);
+        if (!$user)
+        {
+          return $this->response(Response::HTTP_OK, "L\'utilisateur n'existe pas", []);
         }
+        
         $this->sendMail([$user->email], "une intervention vous a été assigné voici le lien pour vous connectez: http://192.168.1.19:4200");
         $this->sendMail($mails,"une intervention a été assigné à $user->prenom");
 
