@@ -55,19 +55,20 @@ class FicheDescController extends Controller
 
     public function insertDesc(Request $request, $id)
     {
-        $intervention = Intervention::find($id);
+        $intervention = Intervention::findOrFail($id);
         if ($intervention) {
-            $ficheDesc = FicheDesc::where("intervention_id", $id)->firstOrFail();
+            $ficheDesc = FicheDesc::where("intervention_id", $id)->first();
             if ($ficheDesc) {
-                FicheDesc::updated([
+                FicheDesc::update([
                     "description" => $request->trableShooting
                 ]);
                 return $this->response(Response::HTTP_OK, "Description mis à jour", []);
             } else {
                 FicheDesc::create([
-                    "description" => $request->trableShooting
+                    "description" => $request->trableShooting,
+                    "intervention_id" => $id
                 ]);
-                return $this->response(Response::HTTP_OK, "Description mis ajoutée", []);
+                return $this->response(Response::HTTP_OK, "Description ajoutée", []);
             }
         } else {
             return $this->response(Response::HTTP_INTERNAL_SERVER_ERROR, "Intervention non trouvée !", []);
