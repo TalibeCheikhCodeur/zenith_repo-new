@@ -142,10 +142,15 @@ class InterventionController extends Controller
     {
         $intervention = Intervention::findOrFail($interventionId);
         $user = User::where('id', $userId)->first();
+        $mails = User::whereIn('role', ['DPT', 'DG'])->pluck('email'); 
+        // return $mails;
         if (!$user) {
             return $this->response(Response::HTTP_OK, "L\'utilisateur n'existe pas", []);
         }
-        $this->sendMail([$user->email], $intervention->description, $intervention->caractere_intervention);
+
+        $this->sendMail([$user->email], "une intervention vous a été assigné");
+        $this->sendMail($mails, "une intervention a été assigné à $user->prenom");
+
         $intervention->user_id = $userId;
         $intervention->isAssigned = true;
 
@@ -153,11 +158,11 @@ class InterventionController extends Controller
         return $this->response(Response::HTTP_OK, "L\'intervention a bien été affectée au consultant", ["intervention" => new InterventionResource($intervention)]);
     }
 
-    public function sendMail($mail, $description = null, $caractere_intervention = null)
+    public function sendMail($mail, $description, $caractere_intervention = null)
     {
         $recipients = [
             'title' => 'Zenith_international',
-            'body' => 'Une intervention vous a été assignée. Veuillez suivre ce lien pour voir les détails:' . 'http://192.168.1.19:4200',
+            'body' => $description,
         ];
         dispatch(new SendEmailJob($recipients, $mail));
     }
