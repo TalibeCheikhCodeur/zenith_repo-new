@@ -46,7 +46,7 @@ Route::get('/users', [UserController::class, 'allUsers']);
 Route::post('/users', [UserController::class, "store"]);
 Route::apiResource('/rapport', RapportController::class);
 Route::apiResource('/ficheDesk', FicheDescController::class);
-Route::post('/insertDesc/{id}', [FicheDescController::class, "insert"]);
+Route::post('/insertDesc/{id}', [FicheDescController::class, "insertDesc"]);
 Route::apiResource('/interventions', InterventionController::class);
 Route::apiResource('/notes', NoteController::class);
 // Route::put('/cloture/{id}', [InterventionController::class, 'clotured']);

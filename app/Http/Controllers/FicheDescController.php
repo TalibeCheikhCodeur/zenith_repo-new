@@ -53,14 +53,14 @@ class FicheDescController extends Controller
         return $this->response(Response::HTTP_OK, "Suppression réussie !", []);
     }
 
-    public function insert(Request $request, $id)
+    public function insertDesc(Request $request, $id)
     {
         $intervention = Intervention::find($id);
         if ($intervention) {
             $ficheDesc = FicheDesc::where("intervention_id", $id)->firstOrFail();
             if ($ficheDesc) {
                 FicheDesc::updated([
-                    "description" => $request->description
+                    "description" => $request->trableShooting
                 ]);
                 return $this->response(Response::HTTP_OK, "Description mis à jour", []);
             } else {
