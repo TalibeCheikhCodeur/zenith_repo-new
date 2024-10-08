@@ -5,17 +5,19 @@ namespace App\Http\Controllers;
 use App\Http\Resources\FicheDescResource;
 use App\Models\FicheDesc;
 use App\Models\Intervention;
+use App\Traits\FormatResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class FicheDescController extends Controller
 {
+    use FormatResponse;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return $this->response(Response::HTTP_OK, "Toutes les fiches", ["Fiches" => FicheDescResource::collection(FicheDesc::all())]);
     }
 
     /**
@@ -45,9 +47,10 @@ class FicheDescController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(FicheDesc $ficheDesc)
     {
-        //
+        $ficheDesc->delete();
+        return $this->response(Response::HTTP_OK, "Suppression réussie !", []);
     }
 
     public function insert(Request $request, $id)
