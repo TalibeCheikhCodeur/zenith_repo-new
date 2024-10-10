@@ -70,12 +70,11 @@ class GammeController extends Controller
      */
     public function destroy(Gamme $gamme)
     {
-        if (!$gamme)
-        {
+        if (!$gamme) {
             return $this->response(Response::HTTP_NOT_FOUND, "La gamme n'existe pas", ['gamme' => []]);
         }
         $gamme->delete();
         $gammes = Gamme::all();
-        return $this->response(Response::HTTP_OK, "La gamme a été supprimée avec succès", ["gammes"=>GammeResource::collection($gammes)]);
+        return $this->response(Response::HTTP_OK, "La gamme a été supprimée avec succès", ["gammes" => GammeResource::collection($gammes)]);
     }
 }
