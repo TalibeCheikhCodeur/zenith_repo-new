@@ -151,82 +151,19 @@ class UserController extends Controller
     }
 
 
-
-
-    // public function updateData(Request $request, $id)
-    // {
-    //     $user = User::findOrFail($id);
-
-    //     $user->update($request->only(['nom', 'prenom', 'nom_client', 'adresse', 'code_client', 'role', 'email', 'telephone']));
-
-    //     if ($request->filled('password')) {
-    //         $user->update(['password' => bcrypt($request->password)]);
-    //     }
-
-    //     if ($request->has('modulesClient'))
-    //     {
-    //         foreach ($request->modulesClient as $module)
-    //         {
-    //             $existingModule = $user->modules()
-    //                 ->where('module_id', $module['module_id'])
-    //                 ->where('code_annuel', $module['code_annuel'])
-    //                 ->first();
-
-    //                 if(isset($existingModule))
-    //                 {
-    //                     $user->modules()->updateExistingPivot($module['module_id'], [
-    //                         'numero_serie' => $module['numero_serie'],
-    //                         'version' => $module['version'],
-    //                         'code_activation' => $module['code_activation'],
-    //                         'nbre_users' => $module['nbre_users'],
-    //                         'nbre_salariés' => $module['nbre_salariés'],
-    //                         'date_fin_validite' => $module['date_fin_validite']
-    //                     ]);
-    //                 } 
-    //                  else
-    //                 {
-    //                  $oldModule = $user->modules()
-    //                     ->where('module_id', $module['module_id'])
-    //                     ->first();
-
-    //                  if ($oldModule && $oldModule->pivot->code_annuel != $module['code_annuel'])
-    //                  {
-    //                     $user->modules()->updateExistingPivot($oldModule->id, ['etat' => 0]);
-    //                  }
-
-    //                 $user->modules()->attach($module['module_id'], [
-    //                     'numero_serie' => $module['numero_serie'],
-    //                     'version' => $module['version'],
-    //                     'code_annuel' => $module['code_annuel'],
-    //                     'code_activation' => $module['code_activation'],
-    //                     'nbre_users' => $module['nbre_users'],
-    //                     'nbre_salariés' => $module['nbre_salariés'],
-    //                     'date_fin_validite' => $module['date_fin_validite'],
-    //                     'etat' => 1
-    //                 ]);
-    //             }
-    //         }
-    //     }
-
-    //     return $this->response(Response::HTTP_OK, "Utilisateur mis à jour avec succès.", ["utilisateur" => $user]);
-    // }
-
-
     public function updateData(Request $request, $id)
     {
         $user = User::findOrFail($id);
-    
-        // Mise à jour des informations de l'utilisateur
+
         $user->update($request->only(['nom', 'prenom', 'nom_client', 'adresse', 'code_client', 'role', 'email', 'telephone']));
     
-        // Mise à jour du mot de passe si présent
-        if ($request->filled('password')) {
+        if ($request->filled('password'))
+        {
             $user->update(['password' => bcrypt($request->password)]);
         }
     
         if ($request->has('modulesClient')) 
         {
-            // Récupérer les modules actuels associés à l'utilisateur ayant un état de 1
             $existingModules = $user->modules()->wherePivot('etat', 1)->pluck('module_id')->toArray();
             $modulesInRequest = [];
     
@@ -261,6 +198,7 @@ class UserController extends Controller
     
                     if ($oldModule && $oldModule->pivot->code_annuel != $module['code_annuel']) 
                     {
+                        // dd("Ok");
                         // Désactiver l'ancien module dont l'état est égal à 1
                         $user->modules()->updateExistingPivot($oldModule->id, ['etat' => 0]);
                     }
