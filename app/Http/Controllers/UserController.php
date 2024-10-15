@@ -290,7 +290,25 @@ class UserController extends Controller
     
         return $this->response(Response::HTTP_OK, "Utilisateur mis à jour avec succès.", ["utilisateur" => $user]);
     }
-    
+
+
+    public function rescindUsers(User $user)
+    {
+        $modulesClient = [];
+        if ($user) {
+            $modulesClient = ModuleClient::getModuleClient($user->id)->get();
+            $user->update(["etat" => 0]);
+            foreach ($modulesClient as $module) {
+                $module->update([
+                    "etat" => 0,
+                    "resilie" => 1
+                ]);
+            }
+            return $this->response(Response::HTTP_OK, "Ce client a bien été résilié !", ["utilisateur" => $user]);
+        }
+        return $this->response(Response::HTTP_INTERNAL_SERVER_ERROR, "Ce client n'existe pas !", []);
+    }
+
 
 
     /**
