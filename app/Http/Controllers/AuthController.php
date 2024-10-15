@@ -14,7 +14,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
 
-        $loginField = filter_var($request->input('email'), FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        $loginField = filter_var($request->input('email'), FILTER_VALIDATE_EMAIL) ? 'email' : 'code_client';
 
         if (!Auth::attempt([$loginField => $request->input('email'), 'password' => $request->input('password')])) {
             return $this->response(Response::HTTP_UNAUTHORIZED, "Login ou mot de passe incorrect", []);

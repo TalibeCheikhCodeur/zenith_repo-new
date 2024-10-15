@@ -162,6 +162,7 @@ class UserController extends Controller
             $user->update(['password' => bcrypt($request->password)]);
         }
 
+        // dd($request->all());
         if ($request->has('modulesClient')) {
             foreach ($request->modulesClient as $module) {
                 $existingModule = $user->modules()
@@ -206,6 +207,22 @@ class UserController extends Controller
     }
 
 
+    public function rescindUsers(User $user)
+    {
+        $modulesClient = [];
+        if ($user) {
+            $modulesClient = ModuleClient::getModuleClient($user->id)->get();
+            $user->update(["etat" => 0]);
+            foreach ($modulesClient as $module) {
+                $module->update([
+                    "etat" => 0,
+                    "resilie" => 1
+                ]);
+            }
+            return $this->response(Response::HTTP_OK, "Ce client a bien été résilié !", ["utilisateur" => $user]);
+        }
+        return $this->response(Response::HTTP_INTERNAL_SERVER_ERROR, "Ce client n'existe pas !", []);
+    }
 
 
 
