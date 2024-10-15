@@ -33,9 +33,6 @@ class FicheDescController extends Controller
      */
     public function show(FicheDesc $ficheDesc)
     {
-        if (!$ficheDesc) {
-            return $this->response(Response::HTTP_INTERNAL_SERVER_ERROR, "Cette description n'existe pas !", []);
-        }
         return $this->response(Response::HTTP_OK, "Description bien récupérée !", ["Desc" => new FicheDescResource($ficheDesc)]);
     }
 
@@ -52,9 +49,6 @@ class FicheDescController extends Controller
      */
     public function destroy(FicheDesc $ficheDesc)
     {
-        if (!$ficheDesc) {
-            return $this->response(Response::HTTP_INTERNAL_SERVER_ERROR, "Cette description n'existe pas !", []);
-        }
         $ficheDesc->delete();
         return $this->response(Response::HTTP_OK, "Suppression réussie !", []);
     }
