@@ -10,8 +10,8 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
+        Schema::table('users', function (Blueprint $table)
+        {
             $table->boolean("etat")->default(true);
         });
     }
@@ -21,8 +21,9 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
+        Schema::table('users', function (Blueprint $table)
+        {
+            $table->dropColumn('etat');
         });
     }
 };
