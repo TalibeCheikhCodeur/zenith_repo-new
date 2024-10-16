@@ -150,12 +150,11 @@ class UserController extends Controller
         return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => $newUsers]);
     }
 
-
     public function updateData(Request $request, $id)
     {
         $user = User::findOrFail($id);
 
-        $user->update($request->only(['nom', 'prenom', 'nom_client', 'adresse', 'code_client', 'role', 'email', 'telephone']));
+        $user->update($request->only(['nom', 'prenom', 'nom_client', 'adresse', 'code_client', 'role', 'email', 'telephone','etat']));
     
         if ($request->filled('password'))
         {
@@ -166,19 +165,17 @@ class UserController extends Controller
         {
             $existingModules = $user->modules()->wherePivot('etat', 1)->pluck('module_id')->toArray();
             $modulesInRequest = [];
-    
-            foreach ($request->modulesClient as $module)
-            {
+
+            foreach ($request->modulesClient as $module) {
                 // Ajouter le module_id à la liste des modules de la requête
                 $modulesInRequest[] = $module['module_id'];
-    
+
                 $existingModule = $user->modules()
                     ->where('module_id', $module['module_id'])
                     ->where('code_annuel', $module['code_annuel'])
                     ->first();
-    
-                if (isset($existingModule)) 
-                {
+
+                if (isset($existingModule)) {
                     // Mettre à jour le pivot si le module existe
                     $user->modules()->updateExistingPivot($module['module_id'], [
                         'numero_serie' => $module['numero_serie'],
@@ -188,9 +185,7 @@ class UserController extends Controller
                         'nbre_salariés' => $module['nbre_salariés'],
                         'date_fin_validite' => $module['date_fin_validite']
                     ]);
-                } 
-                else 
-                {
+                } else {
                     // Gérer les anciens modules avec un code_annuel différent
                     $oldModule = $user->modules()
                         ->where('module_id', $module['module_id'])
@@ -202,7 +197,7 @@ class UserController extends Controller
                         // Désactiver l'ancien module dont l'état est égal à 1
                         $user->modules()->updateExistingPivot($oldModule->id, ['etat' => 0]);
                     }
-    
+
                     // Attacher le nouveau module
                     $user->modules()->attach($module['module_id'], [
                         'numero_serie' => $module['numero_serie'],
@@ -216,19 +211,17 @@ class UserController extends Controller
                     ]);
                 }
             }
-    
+
             // Désactiver les modules dont l'état est égal à 1 et qui ne sont plus dans la requête
             $modulesToDeactivate = array_diff($existingModules, $modulesInRequest);
             // dd($modulesToDeactivate);
-            if (!empty($modulesToDeactivate)) 
-            {
-               $user->modules()->wherePivot('etat', 1)->whereIn('module_id', $modulesToDeactivate)->update(['etat' => 0]);
+            if (!empty($modulesToDeactivate)) {
+                $user->modules()->wherePivot('etat', 1)->whereIn('module_id', $modulesToDeactivate)->update(['etat' => 0]);
             }
         }
-    
+
         return $this->response(Response::HTTP_OK, "Utilisateur mis à jour avec succès.", ["utilisateur" => $user]);
     }
-
 
     public function rescindUsers(User $user)
     {
