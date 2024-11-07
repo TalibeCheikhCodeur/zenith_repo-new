@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('module_clients', function (Blueprint $table) {
-            //
+            $table->dropColumn('etat');
         });
     }
 };
