@@ -13,8 +13,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ExportRequest;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\ClientResource;
-use App\Http\Requests\UpdateUserRequest;
-use App\Models\Module;
+
 
 class UserController extends Controller
 {
