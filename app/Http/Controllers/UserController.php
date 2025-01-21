@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ExportRequest;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\ClientResource;
-
+use App\Models\Module;
 
 class UserController extends Controller
 {
@@ -99,55 +99,131 @@ class UserController extends Controller
         }
     }
 
+    // public function insertData(ExportRequest $request)
+    // {
+    //     $allRequest = $request->all();
+    //     $newUsers = [];
+
+    //     foreach ($allRequest as $req) {
+    //         $newUsers[] = [
+    //             "nom" => $req['nom'] ?? null,
+    //             "nom_client" => $req['nom_client'] ?? null,
+    //             "code_client" => $req['code_client'] ?? null,
+    //             "adresse" => $allRequest['adresse'] ?? null,
+    //             "prenom" => $req['prenom'] ?? null,
+    //             "role" => $req['role'],
+    //             "email" => $req['email'],
+    //             "password" => bcrypt($req['password']),
+    //             "telephone" => $req['telephone'],
+    //         ];
+    //     }
+
+    //     User::insert($newUsers);
+
+    //     foreach ($allRequest as $req) {
+    //         $createdUser = User::where('email', $req['email'])->first();
+
+    //         $details = [
+    //             "title" => "Informations de connexion",
+    //             "body" => UserController::MESSAGE_PASSWORD . 12345678 . ". Vous pouvez le changer en vous connectant via ce lien: http://192.168.1.19:4200"
+    //         ];
+    //         SendEmailJob::dispatch($details, [$req['email']]);
+
+    //         $modulesData = [];
+    //         foreach ($req['modulesClient'] as $module) {
+    //             $modulesData[$module['module_id']] = [
+    //                 'numero_serie' => $module['numero_serie'],
+    //                 'version' => $module['version'],
+    //                 'code_annuel' => $module['code_annuel'],
+    //                 'code_activation' => $module['code_activation'],
+    //                 'nbre_users' => $module['nbre_users'],
+    //                 'nbre_salariés' => $module['nbre_salariés'],
+    //                 'etat' => $module['etat'],
+    //                 'date_fin_validite' => $module['date_fin_validite']
+    //             ];
+    //         }
+
+    //         $createdUser->modules()->attach($modulesData);
+    //     }
+
+    //     return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => $newUsers]);
+    // }
+
+
     public function insertData(ExportRequest $request)
-    {
-        $allRequest = $request->all();
-        $newUsers = [];
+   {
+            $allRequest = $request->all();
+            $newUsers = [];
+            $invalidModules = []; // Pour stocker les modules invalides
 
-        foreach ($allRequest as $req) {
-            $newUsers[] = [
-                "nom" => $req['nom'] ?? null,
-                "nom_client" => $req['nom_client'] ?? null,
-                "code_client" => $req['code_client'] ?? null,
-                "adresse" => $allRequest['adresse'] ?? null,
-                "prenom" => $req['prenom'] ?? null,
-                "role" => $req['role'],
-                "email" => $req['email'],
-                "password" => bcrypt($req['password']),
-                "telephone" => $req['telephone'],
-            ];
-        }
-
-        User::insert($newUsers);
-
-        foreach ($allRequest as $req) {
-            $createdUser = User::where('email', $req['email'])->first();
-
-            $details = [
-                "title" => "Informations de connexion",
-                "body" => UserController::MESSAGE_PASSWORD . 12345678 . ". Vous pouvez le changer en vous connectant via ce lien: http://192.168.1.19:4200"
-            ];
-            SendEmailJob::dispatch($details, [$req['email']]);
-
-            $modulesData = [];
-            foreach ($req['modulesClient'] as $module) {
-                $modulesData[$module['module_id']] = [
-                    'numero_serie' => $module['numero_serie'],
-                    'version' => $module['version'],
-                    'code_annuel' => $module['code_annuel'],
-                    'code_activation' => $module['code_activation'],
-                    'nbre_users' => $module['nbre_users'],
-                    'nbre_salariés' => $module['nbre_salariés'],
-                    'etat' => $module['etat'],
-                    'date_fin_validite' => $module['date_fin_validite']
+            foreach ($allRequest as $req) {
+                $newUsers[] = [
+                    "nom" => $req['nom'] ?? null,
+                    "nom_client" => $req['nom_client'] ?? null,
+                    "code_client" => $req['code_client'] ?? null,
+                    "adresse" => $req['adresse'] ?? null,
+                    "prenom" => $req['prenom'] ?? null,
+                    "role" => $req['role'],
+                    "email" => $req['email'],
+                    "password" => bcrypt($req['password']),
+                    "telephone" => $req['telephone'],
                 ];
             }
 
-            $createdUser->modules()->attach($modulesData);
+            User::insert($newUsers);
+
+            foreach ($allRequest as $req) {
+                $createdUser = User::where('email', $req['email'])->first();
+
+                $details = [
+                    "title" => "Informations de connexion",
+                    "body" => UserController::MESSAGE_PASSWORD . 12345678 . ". Vous pouvez le changer en vous connectant via ce lien: http://192.168.1.19:4200"
+                ];
+                SendEmailJob::dispatch($details, [$req['email']]);
+
+                $modulesData = [];
+                foreach ($req['modulesClient'] as $module) {
+                    // Recherche du module par son nom
+                    $moduleRecord = Module::where('nom_produit', $module['nom_module'])->first();
+
+                    dd($moduleRecord);
+
+                    if ($moduleRecord) {
+                        // Ajouter les données du module si trouvé
+                        $modulesData[$moduleRecord->id] = [
+                            'numero_serie' => $module['numero_serie'],
+                            'version' => $module['version'],
+                            'code_annuel' => $module['code_annuel'],
+                            'code_activation' => $module['code_activation'],
+                            'nbre_users' => $module['nbre_users'],
+                            'nbre_salariés' => $module['nbre_salariés'],
+                            'etat' => $module['etat'],
+                            'date_fin_validite' => $module['date_fin_validite']
+                        ];
+                    } else {
+                        // Ajouter le nom du module non trouvé à la liste des modules invalides
+                        $invalidModules[] = $module['nom_module'];
+                    }
+                }
+
+                // Associer les modules à l'utilisateur si tous les modules sont valides
+                if (!empty($modulesData))
+                {
+                    $createdUser->modules()->attach($modulesData);
+                }
+        }
+
+        // Si des modules sont invalides, retourner une erreur
+        if (!empty($invalidModules))
+        {
+            return $this->response(Response::HTTP_BAD_REQUEST, 'Certains modules sont invalides', [
+                'modules_invalides' => $invalidModules
+            ]);
         }
 
         return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => $newUsers]);
-    }
+ }
+
 
     public function updateData(Request $request, $id)
     {

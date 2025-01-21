@@ -58,3 +58,86 @@ class User extends Authenticatable
         return $this->hasMany(Intervention::class);
     }
 }
+
+
+// $modulesData = [];
+// $invalidModules = [];
+
+// // Grouper les données par module_id
+// $groupedModules = [];
+// foreach ($req['modulesClient'] as $data) {
+//     if (isset($data['module_id'])) {
+//         // Début d'un nouveau module
+//         $groupedModules[] = ['module_id' => $data['module_id']];
+//     } else {
+//         // Ajouter les données au dernier module
+//         $groupedModules[count($groupedModules) - 1] = array_merge(
+//             $groupedModules[count($groupedModules) - 1],
+//             $data
+//         );
+//     }
+// }
+
+// // Traiter chaque module groupé
+// foreach ($groupedModules as $module) {
+//     if (isset($module['module_id'])) {
+//         // Séparer la gamme et le produit
+//         [$gammeNom, $nomProduit] = explode('_', $module['module_id'], 2);
+
+//         // Trouver la gamme correspondante
+//         $gamme = Gamme::where('libelle', $gammeNom)->first();
+
+//         if ($gamme) {
+//             // Trouver le module correspondant à la gamme et au produit
+//             $moduleRecord = Module::where('gamme_id', $gamme->id)
+//                                   ->where('nom_produit', $nomProduit)
+//                                   ->first();
+
+//             if ($moduleRecord)
+//             {
+//                 // Conversion de la date au format 'Y-m-d'
+//                 $dateFinValidite = null;
+//                 if (!empty($module['date_fin_validite']))
+//                 {
+//                     $dateFinValidite = \Carbon\Carbon::createFromFormat('d/m/Y', $module['date_fin_validite'])->format('Y-m-d');
+//                 }
+//                 // Ajouter les données pour ce module
+//                 $modulesData[$moduleRecord->id] = [
+//                     'numero_serie' => $module['numero_serie'] ?? null,
+//                     'version' => $module['version'] ?? null,
+//                     'code_annuel' => $module['code_annuel'] ?? null,
+//                     'code_activation' => $module['code_activation'] ?? null,
+//                     'nbre_users' => $module['nbre_users'] ?? null,
+//                     'nbre_salariés' => $module['nbre_salariés'] ?? null,
+//                     'etat' => 1,
+//                     'date_fin_validite' => $dateFinValidite,
+//                 ];
+//             } else {
+//                 $invalidModules[] = $module['module_id'];
+//             }
+//         } else {
+//             $invalidModules[] = $module['module_id'];
+//         }
+//     }
+// }
+
+// // Associer les modules à l'utilisateur
+// if (!empty($modulesData)) {
+//     $createdUser->modules()->attach($modulesData);
+// }
+
+
+// // Associer les modules à l'utilisateur si tous les modules sont valides
+
+// }
+
+// // Si des modules sont invalides, retourner une erreur
+// if (!empty($invalidModules))
+// {
+// return $this->response(Response::HTTP_BAD_REQUEST, 'Certains modules sont invalides', [
+// 'modules_invalides' => $invalidModules
+// ]);
+// }
+
+// return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => $newUsers]);
+// }
