@@ -29,7 +29,7 @@ class ExportRequest extends FormRequest
             '*.prenom' => $minValidate,
             '*.telephone' => $minValidate,
             '*.role' => 'required|in:consultant,DG,COT,DPT,client',
-            '*.email' => 'nullable|string|email|max:255|unique:users',
+            '*.email' => 'nullable|string|email|max:255',
             '*.password' => 'required|string|min:8|confirmed',
         ];
     }
