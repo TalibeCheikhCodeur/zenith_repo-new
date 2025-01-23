@@ -173,7 +173,7 @@ class UserController extends Controller
                 // Envoi d'un email avec les informations de connexion
                 $details = [
                     "title" => "Informations de connexion",
-                    "body" => UserController::MESSAGE_PASSWORD . $req['password'] . ". Vous pouvez le changer en vous connectant via ce lien: http://192.168.1.19:4200"
+                    "body" => UserController::MESSAGE_PASSWORD . $req['password'] . ". Vous pouvez le changer en vous connectant via ce lien: https://zenith-erp.alwaysdata.net/"
                 ];
                 SendEmailJob::dispatch($details, [$req['email']]);
 
