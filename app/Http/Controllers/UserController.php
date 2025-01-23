@@ -206,7 +206,7 @@ class UserController extends Controller
     //     );
     // }
 
-
+      //Partie DIAZ & URIZEN4 avec quelques ameliorations pour la robustesse du code
       public function insertData(ExportRequest $request)
       {
                 $allRequest = $request->all();
