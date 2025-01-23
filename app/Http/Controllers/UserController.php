@@ -129,8 +129,8 @@ class UserController extends Controller
                     $modulesData[$moduleRecord->id] = [
                         'numero_serie' => $module['numero_serie'],
                         'version' => $module['version'],
-                        'code_annuel' => $module['code_annuel'],
-                        'code_activation' => $module['code_activation'],
+                        'code_annuel' => str_replace(' ','', $module['code_annuel']),
+                        'code_activation' => str_replace(' ', '', $module['code_activation']),
                         'nbre_users' => $module['nbre_users'],
                         'nbre_salariés' => $module['nbre_salarie'] ?? null,
                         'etat' => $module['etat'] ?? 1,
@@ -289,7 +289,6 @@ class UserController extends Controller
         }
         return $this->response(Response::HTTP_INTERNAL_SERVER_ERROR, "Ce client n'existe pas !", []);
     }
-
 
 
     /**
