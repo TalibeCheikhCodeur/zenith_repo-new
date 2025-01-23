@@ -99,57 +99,8 @@ class UserController extends Controller
         }
     }
 
-    // public function insertData(ExportRequest $request)
-    // {
-    //     $allRequest = $request->all();
-    //     $newUsers = [];
 
-    //     foreach ($allRequest as $req) {
-    //         $newUsers[] = [
-    //             "nom" => $req['nom'] ?? null,
-    //             "nom_client" => $req['nom_client'] ?? null,
-    //             "code_client" => $req['code_client'] ?? null,
-    //             "adresse" => $allRequest['adresse'] ?? null,
-    //             "prenom" => $req['prenom'] ?? null,
-    //             "role" => $req['role'],
-    //             "email" => $req['email'],
-    //             "password" => bcrypt($req['password']),
-    //             "telephone" => $req['telephone'],
-    //         ];
-    //     }
-
-    //     User::insert($newUsers);
-
-    //     foreach ($allRequest as $req) {
-    //         $createdUser = User::where('email', $req['email'])->first();
-
-    //         $details = [
-    //             "title" => "Informations de connexion",
-    //             "body" => UserController::MESSAGE_PASSWORD . 12345678 . ". Vous pouvez le changer en vous connectant via ce lien: http://192.168.1.19:4200"
-    //         ];
-    //         SendEmailJob::dispatch($details, [$req['email']]);
-
-    //         $modulesData = [];
-    //         foreach ($req['modulesClient'] as $module) {
-    //             $modulesData[$module['module_id']] = [
-    //                 'numero_serie' => $module['numero_serie'],
-    //                 'version' => $module['version'],
-    //                 'code_annuel' => $module['code_annuel'],
-    //                 'code_activation' => $module['code_activation'],
-    //                 'nbre_users' => $module['nbre_users'],
-    //                 'nbre_salariés' => $module['nbre_salariés'],
-    //                 'etat' => $module['etat'],
-    //                 'date_fin_validite' => $module['date_fin_validite']
-    //             ];
-    //         }
-
-    //         $createdUser->modules()->attach($modulesData);
-    //     }
-
-    //     return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => $newUsers]);
-    // }
-
-    // Partie Khaoussou
+    // Partie1 Khaoussou
     // public function insertData(ExportRequest $request)
     // {
     //     $allRequest = $request->all();
@@ -256,8 +207,8 @@ class UserController extends Controller
     // }
 
 
-             public function insertData(ExportRequest $request)
-             {
+      public function insertData(ExportRequest $request)
+      {
                 $allRequest = $request->all();
                 $errorModules = [];
                 $validUsers = []; // Utilisateurs valides ajoutés
@@ -287,8 +238,8 @@ class UserController extends Controller
                             $modulesData[$moduleRecord->id] = [
                                 'numero_serie' => $module['numero_serie'],
                                 'version' => $module['version'],
-                                'code_annuel' => $module['code_annuel'],
-                                'code_activation' => $module['code_activation'],
+                                'code_annuel' => str_replace(' ','', $module['code_annuel']),
+                                'code_activation' => str_replace(' ', '', $module['code_activation']),
                                 'nbre_users' => $module['nbre_users'],
                                 'nbre_salariés' => $module['nbre_salarie'] ?? null,
                                 'etat' => $module['etat'] ?? 1,
@@ -348,7 +299,7 @@ class UserController extends Controller
                         if (!$existingUser) {
                             $details = [
                                 "title" => "Informations de connexion",
-                                "body" => UserController::MESSAGE_PASSWORD . $req['password'] . ". Vous pouvez le changer en vous connectant via ce lien: http://192.168.1.19:4200"
+                                "body" => UserController::MESSAGE_PASSWORD . $req['password'] . ". Vous pouvez le changer en vous connectant via ce lien: https://zenith-erp.alwaysdata.net/"
                             ];
                             SendEmailJob::dispatch($details, [$req['email']]);
                         }
@@ -373,7 +324,10 @@ class UserController extends Controller
                         "erreurs_modules" => $errorModules,
                     ]
                 );
-             }
+    }
+
+               
+   
 
 
     public function updateData(Request $request, $id)
@@ -467,7 +421,6 @@ class UserController extends Controller
         }
         return $this->response(Response::HTTP_INTERNAL_SERVER_ERROR, "Ce client n'existe pas !", []);
     }
-
 
 
     /**
