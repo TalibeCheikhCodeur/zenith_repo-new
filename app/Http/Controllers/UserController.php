@@ -105,6 +105,7 @@ class UserController extends Controller
         $allRequest = $request->all();
         $errorModules = [];
         $validUsers = []; // Utilisateurs valides ajoutés
+        $inValidUsers = []; // Utilisateurs valides ajoutés
 
         foreach ($allRequest as $req) {
             $moduleNames = array_column($req['modulesClient'], 'module_id');
@@ -162,9 +163,9 @@ class UserController extends Controller
                     "adresse" => $req['adresse'] ?? null,
                     "prenom" => $req['prenom'] ?? null,
                     "role" => $req['role'],
-                    "email" => $req['email'],
+                    "email" => $req['email'] ?? null,
                     "password" => bcrypt($req['password']),
-                    "telephone" => $req['telephone'],
+                    "telephone" => $req['telephone'] ?? null,
                 ]);
 
                 // Association des modules à l'utilisateur
@@ -187,7 +188,7 @@ class UserController extends Controller
                 ];
                 // On retourne quand même l'objet utilisateur même s'il y a une erreur
                 $req['error'] = 'Duplication ou autre erreur';
-                $validUsers[] = $req;  // Ajoute l'utilisateur avec l'erreur dans la liste des utilisateurs valides
+                $inValidUsers[] = $req;  // Ajoute l'utilisateur avec l'erreur dans la liste des utilisateurs valides
             }
         }
 
@@ -196,6 +197,7 @@ class UserController extends Controller
             UserController::MESSAGE_USER,
             [
                 "utilisateurs_insérés" => $validUsers,
+                "utilisateurs_non_insérés" => $inValidUsers,
                 "erreurs_modules" => $errorModules,
             ]
         );
