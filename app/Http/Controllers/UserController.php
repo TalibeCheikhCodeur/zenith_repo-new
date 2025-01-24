@@ -241,7 +241,7 @@ class UserController extends Controller
                         'nbre_salariés' => $module['nbre_salarie'] ?? null,
                         'etat' => $module['etat'] ?? 1,
                         'resilie' => $module['resilie'] ?? 0,
-                        'date_fin_validite' => $module['date_fin_validite'],
+                        'date_fin_validite' => $module['date_fin_validite'] ?? null,
                     ];
                 } else {
                     $errorModules[] = [
@@ -259,12 +259,15 @@ class UserController extends Controller
                 continue;
             }
 
-            // Vérification si l'utilisateur existe déjà
-            $existingUser = User::where('email', $req['email'])->first();
+            if (!empty($req['email'])) {
+                $existingUser = User::where('email', $req['email'])->first();
+            } else {
+                $existingUser = null; // Si l'email est absent ou vide
+            }
 
             try {
                 if (!$existingUser) {
-                    // Création d'un nouvel utilisateur
+                    // Création d'un nouvel utilisateur même si l'email est null
                     $createdUser = User::create([
                         "nom" => $req['nom'] ?? null,
                         "nom_client" => $req['nom_client'] ?? null,
@@ -272,9 +275,9 @@ class UserController extends Controller
                         "adresse" => $req['adresse'] ?? null,
                         "prenom" => $req['prenom'] ?? null,
                         "role" => $req['role'],
-                        "email" => $req['email'] ?? "ziac-it@ziac.sn",
+                        "email" => $req['email'] ?? null, // Peut être null
                         "password" => bcrypt($req['password']),
-                        "telephone" => $req['telephone'],
+                        "telephone" => $req['telephone'] ?? null,
                     ]);
                 } else {
                     // Utilisateur déjà existant
@@ -290,8 +293,8 @@ class UserController extends Controller
                     $createdUser->modules()->attach($newModulesData);
                 }
 
-                // Envoi d'un email uniquement si l'utilisateur est nouvellement créé
-                if (!$existingUser) {
+                // Envoi d'un email uniquement si l'utilisateur est nouvellement créé et a une adresse email
+                if (!$existingUser && !empty($req['email'])) {
                     $details = [
                         "title" => "Informations de connexion",
                         "body" => UserController::MESSAGE_PASSWORD . $req['password'] . ". Vous pouvez le changer en vous connectant via ce lien: https://zenith-erp.alwaysdata.net/"
@@ -309,7 +312,6 @@ class UserController extends Controller
                 ];
             }
         }
-
         return $this->response(
             Response::HTTP_OK,
             UserController::MESSAGE_USER,
@@ -319,6 +321,10 @@ class UserController extends Controller
             ]
         );
     }
+
+
+
+
 
     public function updateData(Request $request, $id)
     {
