@@ -264,10 +264,14 @@ class UserController extends Controller
                         continue;
                     }
 
-                    if (!empty($req['email'])) {
+                    if (!empty($req['email']))
+                    {
                         $existingUser = User::where('email', $req['email'])->first();
-                    } else {
-                        $existingUser = null; // Si l'email est absent ou vide
+                    } else
+                    {
+                        $existingUser = User::where('nom_client', $req['nom_client'] ?? '')
+                        ->where('code_client', $req['code_client'] ?? '')
+                        ->first();
                     }
                     
                     try {
@@ -275,8 +279,8 @@ class UserController extends Controller
                             // Création d'un nouvel utilisateur même si l'email est null
                             $createdUser = User::create([
                                 "nom" => $req['nom'] ?? null,
-                                "nom_client" => $req['nom_client'] ?? null,
-                                "code_client" => $req['code_client'] ?? null,
+                                "nom_client" => $req['nom_client'] ?? '',
+                                "code_client" => $req['code_client'] ?? '',
                                 "adresse" => $req['adresse'] ?? null,
                                 "prenom" => $req['prenom'] ?? null,
                                 "role" => $req['role'],
