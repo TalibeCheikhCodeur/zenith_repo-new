@@ -244,7 +244,7 @@ class UserController extends Controller
                                 'nbre_salariés' => $module['nbre_salarie'] ?? null,
                                 'etat' => $module['etat'] ?? 1,
                                 'resilie' => $module['resilie'] ?? 0,
-                                'date_fin_validite' => $module['date_fin_validite'],
+                                'date_fin_validite' => $module['date_fin_validite'] ?? null,
                             ];
                         } else
                         {
