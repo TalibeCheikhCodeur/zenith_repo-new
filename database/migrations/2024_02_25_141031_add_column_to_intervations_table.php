@@ -10,7 +10,8 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('interventions', function (Blueprint $table) {
+        Schema::table('interventions', function (Blueprint $table)
+        {
             $table->enum('caractere_intervention', ["facture", "non facture"])->default("non facture");
         });
     }
