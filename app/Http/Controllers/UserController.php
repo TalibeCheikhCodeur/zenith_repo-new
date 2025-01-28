@@ -81,7 +81,7 @@ class UserController extends Controller
 
             $details = [
                 "title" => "Informations de connexion",
-                "body" => UserController::MESSAGE_PASSWORD . 12345678 . ". Vous pouvez le changer en vous connectant via ce lien: http://192.168.1.19:4200"
+                "body" => UserController::MESSAGE_PASSWORD . 12345678 . ". Vous pouvez le changer en vous connectant via ce lien: https://zenith-erp.alwaysdata.net/"
             ];
 
             DB::commit();
@@ -298,7 +298,8 @@ class UserController extends Controller
                         $newModulesData = array_diff_key($modulesData, array_flip($existingModules));
                     
                         // Association des nouveaux modules à l'utilisateur
-                        if (!empty($newModulesData)) {
+                        if (!empty($newModulesData))
+                        {
                             $createdUser->modules()->attach($newModulesData);
                         }
                     
