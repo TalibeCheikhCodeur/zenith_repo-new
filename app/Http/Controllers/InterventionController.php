@@ -201,35 +201,39 @@ class InterventionController extends Controller
         $intervention->trableShooting = $trableShooting;
         $intervention->isClotured = true;
 
+        $intervention->save();
 
-        
+
         $interventionArray = (new InterventionResource($intervention))->toArray(request());
         $moduleClientId = $interventionArray['modules'];
 
         foreach ($moduleClientId as $module)
         {
             $moduleClient = ModuleClient::with('user')->find($module->module_client_id);
+            // dd($moduleClient->user->email);
 
             if ($moduleClient && $moduleClient->user && !empty($moduleClient->user->email))
             {
+                $emailArray = $moduleClient->user->email ? (array) $moduleClient->user->email : [];
+                // dd($emailArray);
                 // Préparer les données pour l'e-mail
                 $recipients = [
                     'title' => 'Zenith_international',
                     'body' => "Nous vous informons que votre demande d'intervention a été clôturée avec succès",
                 ];
-        
+               
                 // Dispatcher le job pour envoyer l'e-mail
-                dispatch(new SendEmailJob($recipients, $moduleClient->user->email));
+                dispatch(new SendEmailJob($recipients,$emailArray));
+                // dd("test");
             }
         }
-
-        $intervention->save();
-
-
-        return $this->response(Response::HTTP_OK, 'Fiche enregistrée avec succès', [
+        return $this->response(Response::HTTP_OK, 'Fiche enregistrée avec succès',
+        [
             'intervention' => new InterventionResource($intervention),
             'duree' => $duree
         ]);
+
+       
     }
 
     /*
