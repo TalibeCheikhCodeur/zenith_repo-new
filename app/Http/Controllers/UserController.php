@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ExportRequest;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\ClientResource;
-use App\Http\Requests\UpdateUserRequest;
 use App\Models\Module;
 
 class UserController extends Controller
@@ -67,7 +66,7 @@ class UserController extends Controller
             "role" => $allRequest['role'],
             "email" => $allRequest['email'],
             "password" => $allRequest['password'],
-            "telephone" => $allRequest['telephone'],
+            "telephone" => $allRequest['telephone'] ?? null,
         ];
 
         $modulesClient = $request['modulesClient'];
@@ -82,7 +81,7 @@ class UserController extends Controller
 
             $details = [
                 "title" => "Informations de connexion",
-                "body" => UserController::MESSAGE_PASSWORD . 12345678 . ". Vous pouvez le changer en vous connectant via ce lien: http://192.168.1.19:4200"
+                "body" => UserController::MESSAGE_PASSWORD . 12345678 . ". Vous pouvez le changer en vous connectant via ce lien: https://zenith-erp.alwaysdata.net/"
             ];
 
             DB::commit();
@@ -100,55 +99,242 @@ class UserController extends Controller
         }
     }
 
-    public function insertData(ExportRequest $request)
-    {
-        $allRequest = $request->all();
-        $newUsers = [];
 
-        foreach ($allRequest as $req) {
-            $newUsers[] = [
-                "nom" => $req['nom'] ?? null,
-                "nom_client" => $req['nom_client'] ?? null,
-                "code_client" => $req['code_client'] ?? null,
-                "adresse" => $allRequest['adresse'] ?? null,
-                "prenom" => $req['prenom'] ?? null,
-                "role" => $req['role'],
-                "email" => $req['email'],
-                "password" => bcrypt($req['password']),
-                "telephone" => $req['telephone'],
-            ];
-        }
+    // Partie1 Khaoussou
+    // public function insertData(ExportRequest $request)
+    // {
+    //     $allRequest = $request->all();
+    //     $errorModules = [];
+    //     $validUsers = []; // Utilisateurs valides ajoutés
 
-        User::insert($newUsers);
+    //     foreach ($allRequest as $req)
+    //     {
+    //         $moduleNames = array_column($req['modulesClient'], 'module_id');
+    //         $modules = Module::whereIn('nom_produit', $moduleNames)->get()->keyBy('nom_produit');
 
-        foreach ($allRequest as $req) {
-            $createdUser = User::where('email', $req['email'])->first();
+    //         $modulesData = [];
+    //         $hasError = false;
 
-            $details = [
-                "title" => "Informations de connexion",
-                "body" => UserController::MESSAGE_PASSWORD . 12345678 . ". Vous pouvez le changer en vous connectant via ce lien: http://192.168.1.19:4200"
-            ];
-            SendEmailJob::dispatch($details, [$req['email']]);
+    //         foreach ($req['modulesClient'] as $module) 
+    //         {
+    //             if (!isset($module['module_id'])) {
+    //                 $errorModules[] = [
+    //                     'message' => "Clé 'module_id' manquante.",
+    //                     'module_problematique' => $module,
+    //                     'utilisateur' => $req['email'] ?? 'Inconnu'
+    //                 ];
+    //                 $hasError = true;
+    //                 continue;
+    //             }
 
-            $modulesData = [];
-            foreach ($req['modulesClient'] as $module) {
-                $modulesData[$module['module_id']] = [
-                    'numero_serie' => $module['numero_serie'],
-                    'version' => $module['version'],
-                    'code_annuel' => $module['code_annuel'],
-                    'code_activation' => $module['code_activation'],
-                    'nbre_users' => $module['nbre_users'],
-                    'nbre_salariés' => $module['nbre_salariés'],
-                    'etat' => $module['etat'],
-                    'date_fin_validite' => $module['date_fin_validite']
-                ];
-            }
+    //             if (isset($modules[$module['module_id']])) {
+    //                 $moduleRecord = $modules[$module['module_id']];
+    //                 $modulesData[$moduleRecord->id] = [
+    //                     'numero_serie' => $module['numero_serie'],
+    //                     'version' => $module['version'],
+    //                     'code_annuel' => $module['code_annuel'],
+    //                     'code_activation' => $module['code_activation'],
+    //                     'nbre_users' => $module['nbre_users'],
+    //                     'nbre_salariés' => $module['nbre_salarie'] ?? null,
+    //                     'etat' => $module['etat'] ?? 1,
+    //                     'resilie' => $module['resilie'] ?? 0,
+    //                     'date_fin_validite' => $module['date_fin_validite'],
+    //                 ];
+    //             } else
+    //             {
+    //                 $errorModules[] = [
+    //                     'message' => "Module avec le nom {$module['module_id']} introuvable.",
+    //                     'module_problematique' => $module,
+    //                     'utilisateur' => $req['email'] ?? 'Inconnu'
+    //                 ];
+    //                 $hasError = true;
+    //                 continue;
+    //             }
+    //         }
 
-            $createdUser->modules()->attach($modulesData);
-        }
+    //         // Si un module est invalide, on ignore cet utilisateur
+    //         if ($hasError) {
+    //             continue;
+    //         }
 
-        return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => $newUsers]);
-    }
+    //         try {
+    //             // Création d'un utilisateur
+    //             $createdUser = User::create([
+    //                 "nom" => $req['nom'] ?? null,
+    //                 "nom_client" => $req['nom_client'] ?? null,
+    //                 "code_client" => $req['code_client'] ?? null,
+    //                 "adresse" => $req['adresse'] ?? null,
+    //                 "prenom" => $req['prenom'] ?? null,
+    //                 "role" => $req['role'],
+    //                 "email" => $req['email'],
+    //                 "password" => bcrypt($req['password']),
+    //                 "telephone" => $req['telephone'],
+    //             ]);
+
+    //             // Association des modules à l'utilisateur
+    //             $createdUser->modules()->attach($modulesData);
+
+    //             // Envoi d'un email avec les informations de connexion
+    //             $details = [
+    //                 "title" => "Informations de connexion",
+    //                 "body" => UserController::MESSAGE_PASSWORD . $req['password'] . ". Vous pouvez le changer en vous connectant via ce lien: http://192.168.1.19:4200"
+    //             ];
+    //             SendEmailJob::dispatch($details, [$req['email']]);
+
+    //             $validUsers[] = $createdUser;
+    //         } catch (\Exception $e)
+    //         {
+    //             // Enregistrer l'erreur de création d'utilisateur (duplication ou autres erreurs)
+    //             $errorModules[] = [
+    //                 'message' => "Erreur lors de la création de l'utilisateur : " . $e->getMessage(),
+    //                 'utilisateur' => $req['email'] ?? 'Inconnu',
+    //                 'exception' => $e->getMessage()
+    //             ];
+    //             // On retourne quand même l'objet utilisateur même s'il y a une erreur
+    //             $req['error'] = 'Duplication ou autre erreur';
+    //             $validUsers[] = $req;  // Ajoute l'utilisateur avec l'erreur dans la liste des utilisateurs valides
+    //         }
+    //     }
+
+    //     return $this->response(
+    //         Response::HTTP_OK,
+    //         UserController::MESSAGE_USER,
+    //         [
+    //             "utilisateurs_insérés" => $validUsers,
+    //             "erreurs_modules" => $errorModules,
+    //         ]
+    //     );
+    // }
+
+      //Partie DIAZ & URIZEN4 avec quelques ameliorations pour la robustesse du code
+      public function insertData(ExportRequest $request)
+      {
+                $allRequest = $request->all();
+                $errorModules = [];
+                $validUsers = []; // Utilisateurs valides ajoutés
+
+                foreach ($allRequest as $req)
+                {
+                    $moduleNames = array_column($req['modulesClient'], 'module_id');
+                    $modules = Module::whereIn('nom_produit', $moduleNames)->get()->keyBy('nom_produit');
+
+                    $modulesData = [];
+                    $hasError = false;
+
+                    foreach ($req['modulesClient'] as $module) 
+                    {
+                        if (!isset($module['module_id'])) {
+                            $errorModules[] = [
+                                'message' => "Clé 'module_id' manquante.",
+                                'module_problematique' => $module,
+                                'utilisateur' => $req['email'] ?? 'Inconnu'
+                            ];
+                            $hasError = true;
+                            continue;
+                        }
+
+                        if (isset($modules[$module['module_id']])) {
+                            $moduleRecord = $modules[$module['module_id']];
+                            $modulesData[$moduleRecord->id] = [
+                                'numero_serie' => $module['numero_serie'],
+                                'version' => $module['version'],
+                                'code_annuel' => str_replace(' ','', $module['code_annuel']),
+                                'code_activation' => str_replace(' ', '', $module['code_activation']),
+                                'nbre_users' => $module['nbre_users'],
+                                'nbre_salariés' => $module['nbre_salarie'] ?? null,
+                                'etat' => $module['etat'] ?? 1,
+                                'resilie' => $module['resilie'] ?? 0,
+                                'date_fin_validite' => $module['date_fin_validite'] ?? null,
+                            ];
+                        } else
+                        {
+                            $errorModules[] = [
+                                'message' => "Module avec le nom {$module['module_id']} introuvable.",
+                                'module_problematique' => $module,
+                                'utilisateur' => $req['email'] ?? 'Inconnu'
+                            ];
+                            $hasError = true;
+                            continue;
+                        }
+                    }
+
+                    // Si un module est invalide, on ignore cet utilisateur
+                    if ($hasError)
+                    {
+                        continue;
+                    }
+
+                    if (!empty($req['email']))
+                    {
+                        $existingUser = User::where('email', $req['email'])->first();
+                    } else
+                    {
+                        $existingUser = User::where('nom_client', $req['nom_client'] ?? '')
+                        ->where('code_client', $req['code_client'] ?? '')
+                        ->first();
+                    }
+                    
+                    try {
+                        if (!$existingUser) {
+                            // Création d'un nouvel utilisateur même si l'email est null
+                            $createdUser = User::create([
+                                "nom" => $req['nom'] ?? null,
+                                "nom_client" => $req['nom_client'] ?? '',
+                                "code_client" => $req['code_client'] ?? '',
+                                "adresse" => $req['adresse'] ?? null,
+                                "prenom" => $req['prenom'] ?? null,
+                                "role" => $req['role'],
+                                "email" => $req['email'] ?? null, // Peut être null
+                                "password" => bcrypt($req['password']),
+                                "telephone" => $req['telephone'] ?? null,
+                            ]);
+                        } else {
+                            // Utilisateur déjà existant
+                            $createdUser = $existingUser;
+                        }
+                    
+                        // Vérification des modules déjà associés
+                        $existingModules = $createdUser->modules()->pluck('module_id')->toArray();
+                        $newModulesData = array_diff_key($modulesData, array_flip($existingModules));
+                    
+                        // Association des nouveaux modules à l'utilisateur
+                        if (!empty($newModulesData))
+                        {
+                            $createdUser->modules()->attach($newModulesData);
+                        }
+                    
+                        // Envoi d'un email uniquement si l'utilisateur est nouvellement créé et a une adresse email
+                        if (!$existingUser && !empty($req['email'])) {
+                            $details = [
+                                "title" => "Informations de connexion",
+                                "body" => UserController::MESSAGE_PASSWORD . $req['password'] . ". Vous pouvez le changer en vous connectant via ce lien: https://zenith-erp.alwaysdata.net/"
+                            ];
+                            SendEmailJob::dispatch($details, [$req['email']]);
+                        }
+                    
+                        $validUsers[] = $createdUser;
+                    } catch (\Exception $e) {
+                        // Enregistrer l'erreur de création d'utilisateur (duplication ou autres erreurs)
+                        $errorModules[] = [
+                            'message' => "Erreur lors de la création de l'utilisateur : " . $e->getMessage(),
+                            'utilisateur' => $req['email'] ?? 'Inconnu',
+                            'exception' => $e->getMessage()
+                        ];
+                    }
+                }
+                return $this->response(
+                    Response::HTTP_OK,
+                    UserController::MESSAGE_USER,
+                    [
+                        "utilisateurs_insérés" => $validUsers,
+                        "erreurs_modules" => $errorModules,
+                    ]
+                );
+      }
+
+               
+   
+
 
     public function updateData(Request $request, $id)
     {
@@ -166,7 +352,8 @@ class UserController extends Controller
             $existingModules = $user->modules()->wherePivot('etat', 1)->pluck('module_id')->toArray();
             $modulesInRequest = [];
 
-            foreach ($request->modulesClient as $module) {
+            foreach ($request->modulesClient as $module)
+            {
                 // Ajouter le module_id à la liste des modules de la requête
                 $modulesInRequest[] = $module['module_id'];
 
@@ -175,7 +362,8 @@ class UserController extends Controller
                     ->where('code_annuel', $module['code_annuel'])
                     ->first();
 
-                if (isset($existingModule)) {
+                if (isset($existingModule))
+                {
                     // Mettre à jour le pivot si le module existe
                     $user->modules()->updateExistingPivot($module['module_id'], [
                         'numero_serie' => $module['numero_serie'],
@@ -239,7 +427,6 @@ class UserController extends Controller
         }
         return $this->response(Response::HTTP_INTERNAL_SERVER_ERROR, "Ce client n'existe pas !", []);
     }
-
 
 
     /**

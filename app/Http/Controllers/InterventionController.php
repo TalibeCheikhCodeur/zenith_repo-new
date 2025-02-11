@@ -18,6 +18,7 @@ use App\Http\Resources\InterventionResource;
 use App\Http\Requests\StoreInterventionRequest;
 use App\Http\Requests\UpdateInterventionRequest;
 use App\Http\Resources\InterventionFicheResource;
+use App\Models\ModuleClient;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 use Illuminate\Support\Facades\Auth;
@@ -149,7 +150,7 @@ class InterventionController extends Controller
           return $this->response(Response::HTTP_OK, "L\'utilisateur n'existe pas", []);
         }
         
-        $this->sendMail([$user->email], "une intervention vous a été assigné voici le lien pour vous connectez: http://192.168.1.19:4200");
+        $this->sendMail([$user->email], "une intervention vous a été assigné voici le lien pour vous connectez: https://zenith-erp.alwaysdata.net");
         $this->sendMail($mails,"une intervention a été assigné à $user->prenom");
 
         $intervention->user_id = $userId;
@@ -175,6 +176,7 @@ class InterventionController extends Controller
     public function ficheIntervention(Request $request, $interventionId)
     {
         $intervention = Intervention::findOrFail($interventionId);
+        // dd($intervention);
 
         $dateDebut = $request->input('debut_intervention');
         $dateFin = $request->input('fin_intervention');
@@ -201,10 +203,37 @@ class InterventionController extends Controller
 
         $intervention->save();
 
-        return $this->response(Response::HTTP_OK, 'Fiche enregistrée avec succès', [
+
+        $interventionArray = (new InterventionResource($intervention))->toArray(request());
+        $moduleClientId = $interventionArray['modules'];
+
+        foreach ($moduleClientId as $module)
+        {
+            $moduleClient = ModuleClient::with('user')->find($module->module_client_id);
+            // dd($moduleClient->user->email);
+
+            if ($moduleClient && $moduleClient->user && !empty($moduleClient->user->email))
+            {
+                $emailArray = $moduleClient->user->email ? (array) $moduleClient->user->email : [];
+                // dd($emailArray);
+                // Préparer les données pour l'e-mail
+                $recipients = [
+                    'title' => 'Zenith_international',
+                    'body' => "Nous vous informons que votre demande d'intervention a été clôturée avec succès",
+                ];
+               
+                // Dispatcher le job pour envoyer l'e-mail
+                dispatch(new SendEmailJob($recipients,$emailArray));
+                // dd("test");
+            }
+        }
+        return $this->response(Response::HTTP_OK, 'Fiche enregistrée avec succès',
+        [
             'intervention' => new InterventionResource($intervention),
             'duree' => $duree
         ]);
+
+       
     }
 
     /*
