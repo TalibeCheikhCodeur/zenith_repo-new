@@ -150,7 +150,7 @@ class InterventionController extends Controller
           return $this->response(Response::HTTP_OK, "L\'utilisateur n'existe pas", []);
         }
         
-        $this->sendMail([$user->email], "une intervention vous a été assigné voici le lien pour vous connectez: https://zenith-erp.alwaysdata.net");
+        $this->sendMail([$user->email], "$user->prenom, une intervention vous a été assigné voici le lien pour vous connectez: https://zenith-erp.alwaysdata.net");
         $this->sendMail($mails,"une intervention a été assigné à $user->prenom");
 
         $intervention->user_id = $userId;
