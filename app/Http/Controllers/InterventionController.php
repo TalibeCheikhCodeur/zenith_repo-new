@@ -151,26 +151,28 @@ class InterventionController extends Controller
           return $this->response(Response::HTTP_OK, "L\'utilisateur n'existe pas", []);
         }
         
-        $this->sendMail(
-                [$user->email], 
-                "Une nouvelle intervention vous a été assignée.\n\nVeuillez vous connecter à votre espace pour consulter les détails et prendre les mesures nécessaires.\n\nAccédez à votre compte ici : https://zenith-erp.alwaysdata.net\n\nSi vous avez des questions, n'hésitez pas à nous contacter.\nL'équipe ZIAC-SUPPORT"
-            );        
-            $this->sendMail(
-                $mails, 
-                "Nous vous informons qu'une intervention a été assignée à {$user->prenom}.\n\nVous pouvez consulter les détails de cette intervention en vous connectant à la plateforme via le lien suivant :\n\n👉 https://zenith-erp.alwaysdata.net\n\nCeci est une notification à titre informatif. Si vous avez des questions, n'hésitez pas à nous contacter.\nL'équipe ZIAC-SUPPORT"
-            );
-            
+        $this->sendMail([$user->email], "Bonjour {$user->prenom},<br><br>
+                                        Une nouvelle intervention vous a été assignée sur <strong>Zenith ERP</strong>.<br><br>
+                                        Nous vous invitons à vous connecter à votre espace afin de consulter les détails de l'intervention et d'assurer son bon déroulement.<br><br>
+                                        👉 <a href='https://zenith-erp.alwaysdata.net'><strong>Accédez à votre espace ici</strong></a><br><br>
+                                        N'hésitez pas à nous contacter si vous avez des questions ou besoin d'assistance.<br><br>
+                                        <strong>Cordialement,</strong><br>");
+
+        $this->sendMail($mails,"Bonjour,<br><br>
+                                Une intervention a été assignée à **{$user->prenom}**.<br><br>
+                                Nous vous invitons à consulter votre espace pour prendre connaissance des détails.<br><br>
+                                Cordialement,<br>");
         $intervention->user_id = $userId;
         $intervention->isAssigned = true;
 
         $intervention->save();
-        return $this->response(Response::HTTP_OK, "L\'intervention a bien été affectée au consultant", ["intervention" => new InterventionResource($intervention)]);
+        return $this->response(Response::HTTP_OK, "Bonjour <br> L\'intervention a bien été affectée au consultant", ["intervention" => new InterventionResource($intervention)]);
     }
 
     public function sendMail($mail, $description, $caractere_intervention = null)
     {
         $recipients = [
-            'title' => 'Nouvelle intervention assignée',
+            'title' => 'Zenith-erp',
             'body' => $description,
         ];
         dispatch(new SendEmailJob($recipients, $mail));
