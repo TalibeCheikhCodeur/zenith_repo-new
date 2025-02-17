@@ -80,14 +80,14 @@ class UserController extends Controller
             $user->modules()->attach($modulesClient);
 
             $details = [
-                "title" => "Informations de connexion",
-                "body" => UserController::MESSAGE_PASSWORD . 12345678 . ". Vous pouvez le changer en vous connectant via ce lien: https://zenith-erp.alwaysdata.net/"
+                "title" => "Informations de connexion à votre compte",
+                "body" => "Votre compte sur la plateforme ZIAC-SUPPORT a été créé avec succès. Voici vos informations de connexion :\n\nIdentifiant : votre adresse e-mail\nMot de passe temporaire : 12345678\n\nPour des raisons de sécurité, nous vous recommandons de modifier votre mot de passe dès votre première connexion.\n\nVeuillez accéder à votre espace en cliquant sur le lien suivant : https://zenith-erp.alwaysdata.net/\n\nSi vous rencontrez des difficultés ou avez des questions, n'hésitez pas à nous contacter.L'équipe ZIAC-SUPPORT"
             ];
-
             DB::commit();
             SendEmailJob::dispatch($details, [$newUser['email']]);
 
-            if ($request->code_client != null) {
+            if ($request->code_client != null)
+            {
                 return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => new ClientResource($user)]);
             }
             return $this->response(Response::HTTP_OK, UserController::MESSAGE_USER, ["utilisateur" => new UserResource($user)]);
@@ -275,7 +275,8 @@ class UserController extends Controller
                     }
                     
                     try {
-                        if (!$existingUser) {
+                        if (!$existingUser)
+                        {
                             // Création d'un nouvel utilisateur même si l'email est null
                             $createdUser = User::create([
                                 "nom" => $req['nom'] ?? null,
@@ -304,16 +305,17 @@ class UserController extends Controller
                         }
                     
                         // Envoi d'un email uniquement si l'utilisateur est nouvellement créé et a une adresse email
-                        if (!$existingUser && !empty($req['email'])) {
+                        if (!$existingUser && !empty($req['email'])){
                             $details = [
-                                "title" => "Informations de connexion",
-                                "body" => UserController::MESSAGE_PASSWORD . $req['password'] . ". Vous pouvez le changer en vous connectant via ce lien: https://zenith-erp.alwaysdata.net/"
-                            ];
+                                "title" => "Informations de connexion à votre compte",
+                                "body" => "Votre compte sur la plateforme ZIAC-SUPPORT a été créé avec succès. Voici vos informations de connexion :\n\nIdentifiant : " . $req['email'] . "\nMot de passe temporaire : " . $req['password'] . "\n\nPour des raisons de sécurité, nous vous recommandons de modifier votre mot de passe dès votre première connexion.\n\nVeuillez accéder à votre espace en cliquant sur le lien suivant : https://zenith-erp.alwaysdata.net/\n\nSi vous rencontrez des difficultés ou avez des questions, n'hésitez pas à nous contacter.L'équipe ZIAC-SUPPORT"
+                                ];
                             SendEmailJob::dispatch($details, [$req['email']]);
                         }
                     
                         $validUsers[] = $createdUser;
-                    } catch (\Exception $e) {
+                    } catch (\Exception $e)
+                    {
                         // Enregistrer l'erreur de création d'utilisateur (duplication ou autres erreurs)
                         $errorModules[] = [
                             'message' => "Erreur lors de la création de l'utilisateur : " . $e->getMessage(),

@@ -115,14 +115,15 @@ class InterventionController extends Controller
             $users = User::whereIn('role', ['COT', 'DPT'])->select('prenom')->get();
 
             $recipients = [
-                'title' => 'Zenith_international',
-                'body' => 'Un client a fait une nouvelle demande',
-                'user' => $users
+                "title" => "Nouvelle demande client - ZIAC-SUPPORT",
+                "body" => "Un client vient de soumettre une nouvelle demande sur la plateforme Zenith International.\n\nNous vous invitons à vous connecter à votre espace pour examiner les détails et y répondre dans les plus brefs délais.\n\nAccédez à la plateforme ici : https://zenith-erp.alwaysdata.net/.L'équipe ZIAC-SUPPORT",
+                "user" => $users
             ];
             dispatch(new SendEmailJob($recipients, $mails));
             return $this->response(Response::HTTP_OK, "La demande a été envoyée avec succès", ["intervention" => new InterventionResource($intervention)]);
 
-        } catch (\Exception $e) {
+        } catch (\Exception $e)
+        {
             // Annulation de la transaction en cas d'erreur
             DB::rollBack();
 
@@ -150,9 +151,15 @@ class InterventionController extends Controller
           return $this->response(Response::HTTP_OK, "L\'utilisateur n'existe pas", []);
         }
         
-        $this->sendMail([$user->email], "une intervention vous a été assigné voici le lien pour vous connectez: https://zenith-erp.alwaysdata.net");
-        $this->sendMail($mails,"une intervention a été assigné à $user->prenom");
-
+        $this->sendMail(
+                [$user->email], 
+                "Une nouvelle intervention vous a été assignée.\n\nVeuillez vous connecter à votre espace pour consulter les détails et prendre les mesures nécessaires.\n\nAccédez à votre compte ici : https://zenith-erp.alwaysdata.net\n\nSi vous avez des questions, n'hésitez pas à nous contacter.\nL'équipe ZIAC-SUPPORT"
+            );        
+            $this->sendMail(
+                $mails, 
+                "Nous vous informons qu'une intervention a été assignée à {$user->prenom}.\n\nVous pouvez consulter les détails de cette intervention en vous connectant à la plateforme via le lien suivant :\n\n👉 https://zenith-erp.alwaysdata.net\n\nCeci est une notification à titre informatif. Si vous avez des questions, n'hésitez pas à nous contacter.\nL'équipe ZIAC-SUPPORT"
+            );
+            
         $intervention->user_id = $userId;
         $intervention->isAssigned = true;
 
@@ -163,7 +170,7 @@ class InterventionController extends Controller
     public function sendMail($mail, $description, $caractere_intervention = null)
     {
         $recipients = [
-            'title' => 'Zenith_international',
+            'title' => 'Nouvelle intervention assignée',
             'body' => $description,
         ];
         dispatch(new SendEmailJob($recipients, $mail));
@@ -218,10 +225,10 @@ class InterventionController extends Controller
                 // dd($emailArray);
                 // Préparer les données pour l'e-mail
                 $recipients = [
-                    'title' => 'Zenith_international',
-                    'body' => "Nous vous informons que votre demande d'intervention a été clôturée avec succès",
+                    "title" => "Zenith International - Clôture de votre demande d'intervention",
+                    "body" => "Nous vous informons que votre demande d'intervention a été clôturée avec succès.\n\nVous pouvez consulter les détails de l'intervention en vous connectant à votre espace via le lien suivant :\n\n👉 https://zenith-erp.alwaysdata.net\n\nSi vous avez des questions ou besoin d'une assistance supplémentaire, n'hésitez pas à nous contacter.L'équipe ZIAC-SUPPORT"
                 ];
-               
+                
                 // Dispatcher le job pour envoyer l'e-mail
                 dispatch(new SendEmailJob($recipients,$emailArray));
                 // dd("test");
@@ -232,8 +239,6 @@ class InterventionController extends Controller
             'intervention' => new InterventionResource($intervention),
             'duree' => $duree
         ]);
-
-       
     }
 
     /*

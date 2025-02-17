@@ -34,9 +34,9 @@ class ForgotPasswordController extends Controller
         ]);
         // send mail
         $recipients = [
-            'title' => 'Demande de Changement de mot de passe',
-            'body' => 'Pour réinitialiser votre mot de passe veuillez suivre ce lien : http://192.168.1.19:4200/auth/resetPassword?token=' . $token,
-        ];
+            "title" => "Demande de réinitialisation de mot de passe",
+            "body" => "Vous avez demandé à réinitialiser votre mot de passe. Pour procéder, veuillez cliquer sur le lien ci-dessous :\n\n👉 [Réinitialiser mon mot de passe](https://zenith-erp.alwaysdata.net/auth/resetPassword?token={$token})\n\nSi vous n'êtes pas à l'origine de cette demande, veuillez ignorer ce message.L'équipe ZIAC-SUPPORT"
+        ];        
         dispatch(new SendEmailJob($recipients, [$email]));
         return $this->response(Response::HTTP_OK, "Vérifier votre courrier", ['token' => $token]);
 
