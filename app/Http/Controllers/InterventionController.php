@@ -116,7 +116,7 @@ class InterventionController extends Controller
 
             $recipients = [
                 'title' => 'Zenith_international',
-                'body' => 'Un client a fait une nouvelle demande',
+                'body' => 'Bonjour,<br> Un client a fait une nouvelle demande',
                 'user' => $users
             ];
             dispatch(new SendEmailJob($recipients, $mails));
@@ -150,20 +150,20 @@ class InterventionController extends Controller
           return $this->response(Response::HTTP_OK, "L\'utilisateur n'existe pas", []);
         }
         
-        $this->sendMail([$user->email], "$user->prenom, une intervention vous a été assigné voici le lien pour vous connectez: https://zenith-erp.alwaysdata.net");
-        $this->sendMail($mails,"une intervention a été assigné à $user->prenom");
+        $this->sendMail([$user->email], "Bonjour $user->prenom,<br> une intervention vous a été assigné <br> Voici le lien pour vous connectez: <a href='https://zenith-erp.alwaysdata.net'>Zenith ERP</a>");
+        $this->sendMail($mails,"Bonjour <br> une intervention a été assigné à $user->prenom");
 
         $intervention->user_id = $userId;
         $intervention->isAssigned = true;
 
         $intervention->save();
-        return $this->response(Response::HTTP_OK, "L\'intervention a bien été affectée au consultant", ["intervention" => new InterventionResource($intervention)]);
+        return $this->response(Response::HTTP_OK, "Bonjour <br> L\'intervention a bien été affectée au consultant", ["intervention" => new InterventionResource($intervention)]);
     }
 
     public function sendMail($mail, $description, $caractere_intervention = null)
     {
         $recipients = [
-            'title' => 'Zenith_international',
+            'title' => 'Zenith-erp',
             'body' => $description,
         ];
         dispatch(new SendEmailJob($recipients, $mail));

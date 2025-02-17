@@ -34,12 +34,15 @@ class InterventionNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)
+        // return (new MailMessage)
 
-            ->greeting('Bonjour')
-            ->subject($this->details['title'])
-            ->line($this->details['body'])
-            ->salutation('Cordialement, Zenith');
+        //     ->greeting('Bonjour')
+        //     ->subject($this->details['title'])
+        //     ->line($this->details['body'])
+        //     ->salutation('Cordialement, Zenith');
+        return (new MailMessage)
+        ->subject($this->details['title'])
+        ->view('email', ['body' => $this->details['body']]);
 
     }
 
@@ -51,7 +54,8 @@ class InterventionNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            //mel je t'en prie faut que je te parle j'ai passé ma journée dans le noir mel je le sens je le sais il se fou de moi 
+            //vi arrete ton mec assure ton mec assume wei ton mecc déchire
         ];
     }
 }
