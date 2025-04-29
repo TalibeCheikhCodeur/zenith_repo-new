@@ -151,7 +151,7 @@ class InterventionController extends Controller
           return $this->response(Response::HTTP_OK, "L\'utilisateur n'existe pas", []);
         }
         
-        $this->sendMail([$user->email], "Bonjour {$user->prenom},<br><br>
+        $this->sendMail([$user->email], "Bonjour {$user->prenom} {$user->nom},<br><br>
                                         Une nouvelle intervention vous a été assignée sur <strong>Zenith ERP</strong>.<br><br>
                                         Nous vous invitons à vous connecter à votre espace afin de consulter les détails de l'intervention et d'assurer son bon déroulement.<br><br>
                                         👉 <a href='https://zenith-erp.alwaysdata.net'><strong>Accédez à votre espace ici</strong></a><br><br>

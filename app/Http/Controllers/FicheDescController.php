@@ -16,6 +16,7 @@ class FicheDescController extends Controller
      * Display a listing of the resource.
      */
     public function index()
+
     {
         return $this->response(Response::HTTP_OK, "Toutes les fiches", ["Fiches" => FicheDescResource::collection(FicheDesc::all())]);
     }
@@ -25,7 +26,21 @@ class FicheDescController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'intervention_id' => 'required|exists:interventions,id',
+            'commentaire' => 'required|string',
+        ]);
+    
+        $comment = FicheDesc::updateOrCreate(
+            ['intervention_id' => $validated['intervention_id']],
+            ['commentaire' => $validated['commentaire']]
+        );
+    
+        return response()->json([
+            'message' => 'Commentaire sauvegardé avec succès.',
+            'data' => $comment,
+        ], 201);
+        // return response()->json($comment, 201);
     }
 
     /**
@@ -35,6 +50,27 @@ class FicheDescController extends Controller
     {
         return $this->response(Response::HTTP_OK, "Description bien récupérée !", ["Desc" => new FicheDescResource($ficheDesc)]);
     }
+
+
+    public function getFiche($intervention_id)
+{
+    $ficheDesc = FicheDesc::where('intervention_id', $intervention_id)->first();
+
+    if (!$ficheDesc) {
+        return $this->response(
+            Response::HTTP_NOT_FOUND,
+            "Aucune description trouvée pour cette intervention.",
+            []
+        );
+    }
+
+    return $this->response(
+        Response::HTTP_OK,
+        "Description bien récupérée !",
+        [new FicheDescResource($ficheDesc)]
+    );
+}
+
 
     /**
      * Update the specified resource in storage.

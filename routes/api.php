@@ -47,6 +47,10 @@ Route::post('/users', [UserController::class, "store"]);
 Route::apiResource('/rapport', RapportController::class);
 Route::apiResource('/ficheDesc', FicheDescController::class);
 Route::post('/insertDesc/{id}', [FicheDescController::class, "insertDesc"]);
+Route::get('/getFiche/{id}', [FicheDescController::class, "getFiche"]);
+
+// Route::post('/insertComment', [FicheDescController::class, "store"]);
+
 Route::apiResource('/interventions', InterventionController::class);
 Route::apiResource('/notes', NoteController::class);
 // Route::put('/cloture/{id}', [InterventionController::class, 'clotured']);

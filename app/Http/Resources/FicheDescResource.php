@@ -17,6 +17,7 @@ class FicheDescResource extends JsonResource
         return [
             "id" => $this->id,
             "description" => $this->description,
+            "commentaire"=> $this->commentaire,
             "interventionId" => $this->intervention->id
         ];
     }
