@@ -61,4 +61,3 @@ Route::put('/update/{user}', [UserController::class, 'updateData']);
 Route::apiResource('/moduleClient', ModuleClientController::class);
 Route::apiResource('/gamme', GammeController::class);
 Route::put('/rescind/{user}', [UserController::class, 'rescindUsers']);
-
