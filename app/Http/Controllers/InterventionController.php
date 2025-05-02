@@ -73,7 +73,8 @@ class InterventionController extends Controller
 
             $intervention = Intervention::find($request->idInt);
 
-            if ($intervention == null) {
+            if ($intervention == null)
+            {
                 $intervention = new Intervention();
             }
 
@@ -162,6 +163,7 @@ class InterventionController extends Controller
                                 Une intervention a été assignée à **{$user->prenom}**.<br><br>
                                 Nous vous invitons à consulter votre espace pour prendre connaissance des détails.<br><br>
                                 Cordialement,<br>");
+
         $intervention->user_id = $userId;
         $intervention->isAssigned = true;
 
