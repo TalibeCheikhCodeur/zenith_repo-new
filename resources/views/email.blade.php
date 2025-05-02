@@ -6,6 +6,6 @@
 </head>
 <body>
     <p>{!! $body !!}</p> 
-    <p>Cordialement, Zenith</p>
+    <p>L'équipe Zenith</p>
 </body>
 </html>
