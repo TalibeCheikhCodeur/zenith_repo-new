@@ -6,6 +6,6 @@
 </head>
 <body>
     <p>{!! $body !!}</p> 
-    <p>L'équipe Zenith</p>
+    <p>L'équipe IT</p>
 </body>
 </html>

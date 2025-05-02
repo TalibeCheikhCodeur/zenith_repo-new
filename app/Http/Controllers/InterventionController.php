@@ -157,7 +157,7 @@ class InterventionController extends Controller
                                         Nous vous invitons à vous connecter à votre espace afin de consulter les détails de l'intervention et d'assurer son bon déroulement.<br><br>
                                         👉 <a href='https://zenith-erp.alwaysdata.net'><strong>Accédez à votre espace ici</strong></a><br><br>
                                         N'hésitez pas à nous contacter si vous avez des questions ou besoin d'assistance.<br><br>
-                                        <strong>Cordialement,</strong><br>");
+                                        Cordialement,<br>");
 
         $this->sendMail($mails,"Bonjour,<br><br>
                                 Une intervention a été assignée à **{$user->prenom}** **{$user->nom}**.<br><br>
