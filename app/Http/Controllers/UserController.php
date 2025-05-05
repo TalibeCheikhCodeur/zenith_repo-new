@@ -81,7 +81,7 @@ class UserController extends Controller
 
             $details = [
                 "title" => "Informations de connexion à votre compte",
-                "body" => "Votre compte sur la plateforme ZIAC-SUPPORT a été créé avec succès. Voici vos informations de connexion :\n\nIdentifiant : votre adresse e-mail\nMot de passe temporaire : 12345678\n\nPour des raisons de sécurité, nous vous recommandons de modifier votre mot de passe dès votre première connexion.\n\nVeuillez accéder à votre espace en cliquant sur le lien suivant : https://zenith-erp.alwaysdata.net/\n\nSi vous rencontrez des difficultés ou avez des questions, n'hésitez pas à nous contacter.L'équipe ZIAC-SUPPORT"
+                "body" => "Bonjour,<br><br> Votre compte sur la plateforme ZIAC-SUPPORT a été créé avec succès.<br><br> Voici vos informations de connexion : Identifiant : votre adresse e-mail\nMot de passe temporaire : 12345678<br><br>Pour des raisons de sécurité, nous vous recommandons de modifier votre mot de passe dès votre première connexion.<br><br>Veuillez accéder à votre espace en cliquant sur le lien suivant : https://zenith-erp.alwaysdata.net/<br><br>Si vous rencontrez des difficultés ou avez des questions, n'hésitez pas à nous contacter."
             ];
             DB::commit();
             SendEmailJob::dispatch($details, [$newUser['email']]);
@@ -308,7 +308,7 @@ class UserController extends Controller
                         if (!$existingUser && !empty($req['email'])){
                             $details = [
                                 "title" => "Informations de connexion à votre compte",
-                                "body" => "Votre compte sur la plateforme ZIAC-SUPPORT a été créé avec succès. Voici vos informations de connexion :\n\nIdentifiant : " . $req['email'] . "\nMot de passe temporaire : " . $req['password'] . "\n\nPour des raisons de sécurité, nous vous recommandons de modifier votre mot de passe dès votre première connexion.\n\nVeuillez accéder à votre espace en cliquant sur le lien suivant : https://zenith-erp.alwaysdata.net/\n\nSi vous rencontrez des difficultés ou avez des questions, n'hésitez pas à nous contacter.L'équipe ZIAC-SUPPORT"
+                                "body" => "Votre compte sur la plateforme ZIAC-SUPPORT a été créé avec succès.<br> Voici vos informations de connexion :\n\nIdentifiant : <br>" . $req['email'] . "\nMot de passe temporaire : " . $req['password'] . "<br><br>Pour des raisons de sécurité, nous vous recommandons de modifier votre mot de passe dès votre première connexion.<br><br>Veuillez accéder à votre espace en cliquant sur le lien suivant : https://zenith-erp.alwaysdata.net/<br><br>Si vous rencontrez des difficultés ou avez des questions, n'hésitez pas à nous contacter."
                                 ];
                             SendEmailJob::dispatch($details, [$req['email']]);
                         }
